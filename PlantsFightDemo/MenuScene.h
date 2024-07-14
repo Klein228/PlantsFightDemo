@@ -4,7 +4,7 @@
 #include"Atlas.h"
 #include"Animation.h"
 #include"Camera.h"
-
+#include"Timer.h"
 extern SceneManager scene_manager;
 extern Atlas game_character_atlas_1_run_right;
 class MenuScene : public Scene
@@ -17,18 +17,25 @@ public:
 		animation_game_character_1_run_right.set_atlas(&game_character_atlas_1_run_right);
 		animation_game_character_1_run_right.set_loop(true);
 		animation_game_character_1_run_right.set_interval(75);
+
+		timer.set_wait_time(1000);
+		timer.set_one_shot(false);
+		timer.set_callback([]()
+			{
+				std::cout << "shot!" << std::endl;
+			});
 	}
 	void on_input(const ExMessage& msg)
 	{
 		if (msg.message == WM_KEYDOWN)
 		{
-			on_exit();
+			camera.shake(10, 1000);
 		}
 	}
 	void on_updata(int delta)
 	{
 		camera.on_updata(delta);
-
+		timer.on_updata(delta);
 		animation_game_character_1_run_right.on_updata(delta);
 	}
 	void on_draw() 
@@ -41,6 +48,7 @@ public:
 
 	}
 private:
+	Timer timer;
 	Animation animation_game_character_1_run_right;
 	Camera camera;
 };
