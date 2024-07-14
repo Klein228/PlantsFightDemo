@@ -2,13 +2,15 @@
 #include"Scene.h"
 extern Scene* game_scene;
 extern Scene* menu_scene;
+extern Scene* select_scene;
 class SceneManager
 {
 public:
 	enum class sceneType
 	{
 		Menu,
-		Game
+		Game,
+		Select
 	};
 public:
 	SceneManager() = default;
@@ -23,12 +25,14 @@ public:
 		current_scene->on_exit();
 		switch (type)
 		{
-		case SceneManager::sceneType::Menu:
+		case sceneType::Menu:
 			current_scene = menu_scene;
 			break;
-		case SceneManager::sceneType::Game:
+		case sceneType::Game:
 			current_scene = game_scene;
 			break;
+		case sceneType::Select:
+			current_scene = select_scene;
 		default:
 			break;
 		}
@@ -38,9 +42,9 @@ public:
 	{
 		current_scene->on_input(msg);
 	}
-	void on_updata()
+	void on_updata(int delta)
 	{
-		current_scene->on_updata();
+		current_scene->on_updata(delta);
 	}
 	void on_draw()
 	{

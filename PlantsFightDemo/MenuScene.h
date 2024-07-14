@@ -1,8 +1,12 @@
 #pragma once
 #include "Scene.h"
 #include"SceneManager.h"
+#include"Atlas.h"
+#include"Animation.h"
+#include"Camera.h"
 
 extern SceneManager scene_manager;
+extern Atlas game_character_atlas_1_run_right;
 class MenuScene : public Scene
 {
 public:
@@ -10,26 +14,34 @@ public:
 	~MenuScene() = default;
 	void on_enter()
 	{
-		std::cout << "进入主菜单" << std::endl;
+		animation_game_character_1_run_right.set_atlas(&game_character_atlas_1_run_right);
+		animation_game_character_1_run_right.set_loop(true);
+		animation_game_character_1_run_right.set_interval(75);
 	}
 	void on_input(const ExMessage& msg)
 	{
 		if (msg.message == WM_KEYDOWN)
 		{
-			scene_manager.switch_to(SceneManager::sceneType::Game);
+			on_exit();
 		}
 	}
-	void on_updata()
+	void on_updata(int delta)
 	{
-		std::cout << "主菜单正在运行" << std::endl;
+		camera.on_updata(delta);
+
+		animation_game_character_1_run_right.on_updata(delta);
 	}
 	void on_draw() 
 	{
-		outtextxy(0, 0, _T("主菜单绘图内容"));
+		animation_game_character_1_run_right.on_draw(100-camera.get_position().x, 100-camera.get_position().y);
 	}
 	void on_exit() 
 	{
 		std::cout << "退出主菜单" << std::endl;
+
 	}
+private:
+	Animation animation_game_character_1_run_right;
+	Camera camera;
 };
 
