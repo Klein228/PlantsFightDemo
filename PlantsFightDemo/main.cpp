@@ -7,8 +7,17 @@
 #include"Atlas.h"
 #include"Camera.h"
 
+//设置窗口大小
+const POINT window_size = {960,480};
 //主菜单图片动画资源加载
-IMAGE memu_buckground_img;
+IMAGE memu_background_img;
+IMAGE menu_start_game_img_default;
+IMAGE menu_start_game_img_hover;
+
+//角色选择场景资源加载
+IMAGE select_scene_background_img;
+IMAGE table_img;
+Atlas evilwizard3_attack_right_atlas;
 
 //游戏场景资源加载
 IMAGE game_background_img;
@@ -17,7 +26,8 @@ Atlas game_character_atlas_1_run_right;
 Atlas game_character_atlas_1_junp;
 Atlas game_character_atlas_1_dead;
 
-//角色选择场景资源加载
+
+
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -35,7 +45,13 @@ void flip_atlas(Atlas& src, Atlas& dst)
 }
 void load_game_resources()
 {
-	game_character_atlas_1_run_right.load_from_file(_T("resources/Run_%d.png"), 13, 120, 135);
+
+	loadimage(&memu_background_img, L"resources/menu_background.png", window_size.x, window_size.y);
+	loadimage(&menu_start_game_img_default, L"resources/start_default.png");
+	loadimage(&menu_start_game_img_hover, L"resources/start_hover.png");
+	loadimage(&select_scene_background_img, L"resources/selecte_scene_background.jpg");
+	loadimage(&table_img, L"resources/table.png",120,120);
+	evilwizard3_attack_right_atlas.load_from_file(L"resources/character/EvilWizard3/Attack/attack%d.png",13,240,240);
 }
 int main()
 {
@@ -49,9 +65,10 @@ int main()
 	select_scene = new SelectScene();
 
 
-	initgraph(1280, 720);
+	initgraph(window_size.x, window_size.y);
 
 	scene_manager.set_current_scene(menu_scene);
+
 	BeginBatchDraw();
 	while (true)
 	{
