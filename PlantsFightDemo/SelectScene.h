@@ -2,9 +2,25 @@
 #include"Scene.h"
 #include"SceneManager.h"
 extern SceneManager scene_manager;
-extern IMAGE select_scene_background_img;
-extern IMAGE table_img;
-extern Atlas evilwizard3_attack_right_atlas;
+extern const POINT window_size;
+extern IMAGE img_select_scene_background;
+extern IMAGE img_start_game_tip;
+extern IMAGE img_start_game_tip_black;
+extern IMAGE img_character_table;
+extern IMAGE img_character_table_flipped;
+extern IMAGE img_1P;
+extern IMAGE img_1P_black;
+extern IMAGE img_2P;
+extern IMAGE img_2P_black;
+extern IMAGE img_1P_selector_btn_right;
+extern IMAGE img_1P_selector_btn_right_down;
+extern IMAGE img_1P_selector_btn_left;
+extern IMAGE img_1P_selector_btn_left_down;
+extern IMAGE img_2P_selector_btn_right;
+extern IMAGE img_2P_selector_btn_right_down;
+extern IMAGE img_2P_selector_btn_left;
+extern IMAGE img_2P_selector_btn_left_down;
+extern IMAGE img_vs;
 class SelectScene : public Scene
 {
 public:
@@ -12,28 +28,110 @@ public:
 	~SelectScene() {}
 	void on_enter()
 	{
-		evil_wizard_attack_right_animation.set_atlas(&evilwizard3_attack_right_atlas);
-		evil_wizard_attack_right_animation.set_interval(100);
-		evil_wizard_attack_right_animation.set_loop(true);
-
-		character1_position.x = (table_position.x + (table_img.getwidth() - evilwizard3_attack_right_atlas.get_img_at(0)->getwidth()) / 2);
-		character1_position.y = (table_position.y + (table_img.getheight() - evilwizard3_attack_right_atlas.get_img_at(0)->getheight()) / 2);
+		pos_start_game_tip.x = (window_size.x - img_start_game_tip.getwidth()) / 2;
+		pos_start_game_tip.y = window_size.y * 4 / 5;
+		pos_table.x = (window_size.x - img_character_table.getwidth() * 2) / 6;
+		pos_table.y = window_size.y * 1 / 5;
+		pos_table_flipped.x = (window_size.x - pos_table.x - img_character_table.getwidth());
+		pos_table_flipped.y = pos_table.y;
+		pos_1P.x = pos_table.x + (img_character_table.getwidth() - img_1P.getwidth()) / 2;
+		pos_1P.y = pos_table.y - img_1P.getheight();
+		pos_2P.x = pos_table_flipped.x + (img_character_table.getwidth() - img_1P.getwidth()) / 2;
+		pos_2P.y = pos_table_flipped.y - img_1P.getheight();
+		pos_1P_selector_btn_left.x = pos_table.x - img_1P_selector_btn_left.getwidth();
+		pos_1P_selector_btn_left.y = pos_table.y + img_character_table.getheight() * 3 / 10;
+		pos_1P_selector_btn_right.x = pos_table.x + img_character_table.getwidth();
+		pos_1P_selector_btn_right.y = pos_1P_selector_btn_left.y;
+		pos_2P_selector_btn_left.x = pos_table_flipped.x - img_2P_selector_btn_left.getwidth();
+		pos_2P_selector_btn_left.y = pos_table_flipped.y + img_character_table.getheight() * 3 / 10;
+		pos_2P_selector_btn_right.x = pos_table_flipped.x + img_character_table.getwidth();
+		pos_2P_selector_btn_right.y = pos_2P_selector_btn_left.y;
+		pos_vs.x = (window_size.x - img_vs.getwidth()) / 2;
+		pos_vs.y = (window_size.y - img_vs.getheight()) / 2;
+		//按钮时间计时器
+		timer_btn_down.set_wait_time(100);
+		timer_btn_down.set_one_shot(true);
+		timer_btn_down.set_callback([&]() {
+			btn_1P_left_down = false;
+			btn_1P_right_down = false;
+			btn_2P_left_down = false;
+			btn_2P_right_down = false;
+			});
 	}
 	void on_input(const ExMessage& msg)
 	{
+		if (msg.message == WM_LBUTTONDOWN)//鼠标点击更新按钮按下状态 计时启动
+		{
 
+			if (msg.x >= pos_1P_selector_btn_left.x && msg.x <= pos_1P_selector_btn_left.x + img_1P_selector_btn_left.getwidth() &&
+				msg.y >= pos_1P_selector_btn_left.y && msg.y <= pos_1P_selector_btn_left.y + img_1P_selector_btn_left.getheight())
+			{
+				btn_1P_left_down = true;
+				timer_btn_down.restart();
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+			}
+			else
+			{
+				btn_1P_left_down = false;
+			}
+
+			if (msg.x >= pos_1P_selector_btn_right.x && msg.x <= pos_1P_selector_btn_right.x + img_1P_selector_btn_right.getwidth() &&
+				msg.y >= pos_1P_selector_btn_right.y && msg.y <= pos_1P_selector_btn_right.y + img_1P_selector_btn_right.getheight())
+			{
+				btn_1P_right_down = true;
+				timer_btn_down.restart();
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+			}
+			else
+			{
+				btn_1P_right_down = false;
+			}
+
+			if (msg.x >= pos_2P_selector_btn_left.x && msg.x <= pos_2P_selector_btn_left.x + img_2P_selector_btn_left.getwidth() &&
+				msg.y >= pos_2P_selector_btn_left.y && msg.y <= pos_2P_selector_btn_left.y + img_2P_selector_btn_left.getheight())
+			{
+				btn_2P_left_down = true;
+				timer_btn_down.restart();
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+			}
+			else
+			{
+				btn_2P_left_down = false;
+			}
+
+			if (msg.x >= pos_2P_selector_btn_right.x && msg.x <= pos_2P_selector_btn_right.x + img_2P_selector_btn_right.getwidth() &&
+				msg.y >= pos_2P_selector_btn_right.y && msg.y <= pos_2P_selector_btn_right.y + img_2P_selector_btn_right.getheight())
+			{
+				btn_2P_right_down = true;
+				timer_btn_down.restart();
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+			}
+			else
+			{
+				btn_2P_right_down = false;
+			}
+		}
 	}
 	void on_updata(int delta)
 	{
-		evil_wizard_attack_right_animation.on_updata(delta);
+		timer_btn_down.on_updata(delta);
 	}
 	void on_draw()
 	{
-		putimage_alpha(0, 0, &select_scene_background_img);
-		putimage_alpha(table_position.x, table_position.y, &table_img);
-		putimage_alpha(getwidth()-table_position.x-table_img.getwidth(), table_position.y, &table_img);
-		evil_wizard_attack_right_animation.on_draw(character1_position.x,character1_position.y);
-		
+		putimage_alpha(0, 0, &img_select_scene_background);
+		putimage_alpha(pos_vs.x, pos_vs.y, &img_vs);
+		putimage_alpha(pos_start_game_tip.x + 3, pos_start_game_tip.y + 3, &img_start_game_tip_black);
+		putimage_alpha(pos_start_game_tip.x, pos_start_game_tip.y, &img_start_game_tip);
+		putimage_alpha(pos_table.x, pos_table.y, &img_character_table);
+		putimage_alpha(pos_table_flipped.x, pos_table_flipped.y, &img_character_table_flipped);
+		putimage_alpha(pos_1P.x + 5, pos_1P.y + 5, &img_1P_black);
+		putimage_alpha(pos_1P.x, pos_1P.y, &img_1P);
+		putimage_alpha(pos_2P.x + 5, pos_2P.y + 5, &img_2P_black);
+		putimage_alpha(pos_2P.x, pos_2P.y, &img_2P);
+		putimage_alpha(pos_1P_selector_btn_left.x, pos_1P_selector_btn_left.y, btn_1P_left_down ? &img_1P_selector_btn_left_down : &img_1P_selector_btn_left);
+		putimage_alpha(pos_1P_selector_btn_right.x, pos_1P_selector_btn_right.y, btn_1P_right_down ? &img_1P_selector_btn_right_down : &img_1P_selector_btn_right);
+		putimage_alpha(pos_2P_selector_btn_left.x, pos_2P_selector_btn_left.y, btn_2P_left_down ? &img_2P_selector_btn_left_down : &img_2P_selector_btn_left);
+		putimage_alpha(pos_2P_selector_btn_right.x, pos_2P_selector_btn_right.y, btn_2P_right_down ? &img_2P_selector_btn_right_down : &img_2P_selector_btn_right);
 	}
 	void on_exit()
 	{
@@ -41,7 +139,19 @@ public:
 	}
 
 private:
-	POINT table_position = {200,80};
-	POINT character1_position = { 0,0 };
-	Animation evil_wizard_attack_right_animation;
+	POINT pos_start_game_tip = { 0,0 };
+	POINT pos_table = { 0,0 };
+	POINT pos_table_flipped = { 0,0 };
+	POINT pos_1P = { 0,0 };
+	POINT pos_2P = { 0,0 };
+	POINT pos_1P_selector_btn_right = { 0,0 };
+	POINT pos_1P_selector_btn_left = { 0,0 };
+	POINT pos_2P_selector_btn_right = { 0,0 };
+	POINT pos_2P_selector_btn_left = { 0,0 };
+	POINT pos_vs = { 0,0 };
+	bool btn_1P_left_down = false;
+	bool btn_1P_right_down = false;
+	bool btn_2P_left_down = false;
+	bool btn_2P_right_down = false;
+	Timer timer_btn_down;
 };

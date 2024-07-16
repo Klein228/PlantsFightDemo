@@ -6,26 +6,35 @@
 #include"utils.h"
 #include"Atlas.h"
 #include"Camera.h"
+#include<Windows.h>
+#include<mciapi.h>
+#pragma comment(lib,"Winmm.lib")
 
 //设置窗口大小
-const POINT window_size = {960,480};
-//主菜单图片动画资源加载
-IMAGE memu_background_img;
-IMAGE menu_start_game_img_default;
-IMAGE menu_start_game_img_hover;
+const POINT window_size = {1280,720};
+//主菜单场景资源加载
+IMAGE img_memu_background;
 
 //角色选择场景资源加载
-IMAGE select_scene_background_img;
-IMAGE table_img;
-Atlas evilwizard3_attack_right_atlas;
-
+IMAGE img_select_scene_background;
+IMAGE img_start_game_tip;
+IMAGE img_start_game_tip_black;
+IMAGE img_character_table;
+IMAGE img_character_table_flipped;
+IMAGE img_1P;
+IMAGE img_1P_black;
+IMAGE img_2P;
+IMAGE img_2P_black;
+IMAGE img_1P_selector_btn_right;
+IMAGE img_1P_selector_btn_right_down;
+IMAGE img_1P_selector_btn_left;
+IMAGE img_1P_selector_btn_left_down;
+IMAGE img_2P_selector_btn_right;
+IMAGE img_2P_selector_btn_right_down;
+IMAGE img_2P_selector_btn_left;
+IMAGE img_2P_selector_btn_left_down;
+IMAGE img_vs;
 //游戏场景资源加载
-IMAGE game_background_img;
-Atlas game_character_atlas_1_idle;
-Atlas game_character_atlas_1_run_right;
-Atlas game_character_atlas_1_junp;
-Atlas game_character_atlas_1_dead;
-
 
 
 
@@ -45,13 +54,42 @@ void flip_atlas(Atlas& src, Atlas& dst)
 }
 void load_game_resources()
 {
-
-	loadimage(&memu_background_img, L"resources/menu_background.png", window_size.x, window_size.y);
-	loadimage(&menu_start_game_img_default, L"resources/start_default.png");
-	loadimage(&menu_start_game_img_hover, L"resources/start_hover.png");
-	loadimage(&select_scene_background_img, L"resources/selecte_scene_background.jpg");
-	loadimage(&table_img, L"resources/table.png",120,120);
-	evilwizard3_attack_right_atlas.load_from_file(L"resources/character/EvilWizard3/Attack/attack%d.png",13,240,240);
+	//图片资源
+	loadimage(&img_memu_background, L"resources/menu_background.png", window_size.x, window_size.y);
+	loadimage(&img_select_scene_background, L"resources/selector_background.png", window_size.x, window_size.y);
+	loadimage(&img_start_game_tip, L"resources/selector_tip.png");
+	black_image(&img_start_game_tip, &img_start_game_tip_black);
+	loadimage(&img_character_table, L"resources/gravestone.png");
+	flip_image(&img_character_table, &img_character_table_flipped);
+	loadimage(&img_1P, L"resources/1P.png");
+	black_image(&img_1P, &img_1P_black);
+	loadimage(&img_2P, L"resources/2P.png");
+	black_image(&img_2P, &img_2P_black);
+	loadimage(&img_1P_selector_btn_right, L"resources/1P_selector_btn_idle.png");
+	loadimage(&img_1P_selector_btn_right_down, L"resources/1P_selector_btn_down.png");
+	flip_image(&img_1P_selector_btn_right, &img_1P_selector_btn_left);
+	flip_image(&img_1P_selector_btn_right_down, &img_1P_selector_btn_left_down);
+	loadimage(&img_2P_selector_btn_right, L"resources/2P_selector_btn_idle.png");
+	loadimage(&img_2P_selector_btn_right_down, L"resources/2P_selector_btn_down.png");
+	flip_image(&img_2P_selector_btn_right, &img_2P_selector_btn_left);
+	flip_image(&img_2P_selector_btn_right_down, &img_2P_selector_btn_left_down);
+	loadimage(&img_vs, L"resources/VS.png");
+	//音乐
+	mciSendString(_T("open resources/bgm_menu.mp3 alias bgm_menu"), NULL, 0, NULL);
+	mciSendString(_T("open resources/bgm_game.mp3 alias bgm_game"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_break_1.mp3 alias pea_break_1"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_break_2.mp3 alias pea_break_2"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_break_3.mp3 alias pea_break_3"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_shoot_1.mp3 alias pea_shoot_1"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_shoot_2.mp3 alias pea_shoot_2"), NULL, 0, NULL);
+	mciSendString(_T("open resources/pea_shoot_ex.mp3 alias pea_shoot_ex"), NULL, 0, NULL);
+	mciSendString(_T("open resources/sun_explode.mp3 alias sun_explode"), NULL, 0, NULL);
+	mciSendString(_T("open resources/sun_explode_ex.mp3 alias sun_explode_ex"), NULL, 0, NULL);
+	mciSendString(_T("open resources/sun_text.mp3 alias sun_text"), NULL, 0, NULL);
+	mciSendString(_T("open resources/ui_confirm.wav alias ui_confirm"), NULL, 0, NULL);
+	mciSendString(_T("open resources/ui_switch.wav alias ui_switch"), NULL, 0, NULL);
+	mciSendString(_T("open resources/ui_win.wav alias ui_win"), NULL, 0, NULL);
+	mciSendString(_T("open resources/impact_btn.wav alias btn"), NULL, 0, NULL);
 }
 int main()
 {

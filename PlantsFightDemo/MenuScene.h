@@ -6,9 +6,7 @@
 #include"Camera.h"
 #include"Timer.h"
 extern SceneManager scene_manager;
-extern IMAGE memu_background_img;
-extern IMAGE menu_start_game_img_default;
-extern IMAGE menu_start_game_img_hover;
+extern IMAGE img_memu_background;
 
 class MenuScene : public Scene
 {
@@ -17,29 +15,18 @@ public:
 	~MenuScene() = default;
 	void on_enter()
 	{
-		start_btn_position.x = (getwidth() - menu_start_game_img_default.getwidth()) / 2;
-		start_btn_position.y = getheight()*1/2;
+		mciSendString(_T("play bgm_menu repeat from 0"), NULL, 0, NULL);
 	}
 	void on_input(const ExMessage& msg)
 	{
-		//判断鼠标位更新开始按钮图片
-		if (msg.message == WM_MOUSEMOVE)
+		
+		if (msg.message == WM_KEYUP)
 		{
-			if (msg.x >= start_btn_position.x && msg.x <= start_btn_position.x + menu_start_game_img_default.getwidth() &&
-				msg.y >= start_btn_position.y && msg.y <= start_btn_position.y + menu_start_game_img_default.getheight())
-				mouse_hover_on_btn = true;
-			else
-			{
-				mouse_hover_on_btn = false;
-			}
+			mciSendString(_T("play ui_confirm from 0"), NULL, 0, NULL);
+			scene_manager.switch_to(SceneManager::sceneType::Select);
+
 		}
-		//判断是否在开始按钮位置按下鼠标左键
-		if (msg.message == WM_LBUTTONDOWN)
-		{
-			if (msg.x >= start_btn_position.x && msg.x <= start_btn_position.x + menu_start_game_img_default.getwidth() &&
-				msg.y >= start_btn_position.y && msg.y <= start_btn_position.y + menu_start_game_img_default.getheight())
-				scene_manager.switch_to(SceneManager::sceneType::Select);
-		}
+		
 	}
 	void on_updata(int delta)
 	{
@@ -47,8 +34,7 @@ public:
 	}
 	void on_draw() 
 	{
-		putimage_alpha(0, 0, &memu_background_img);
-		putimage_alpha(start_btn_position.x, start_btn_position.y, (mouse_hover_on_btn) ? &menu_start_game_img_hover : &menu_start_game_img_default);
+		putimage_alpha(0, 0, &img_memu_background);
 	}
 	void on_exit() 
 	{
@@ -56,7 +42,5 @@ public:
 	}
 private:
 	Camera camera;
-	bool mouse_hover_on_btn = false;
-	POINT start_btn_position = { 0,0 };
 };
 
