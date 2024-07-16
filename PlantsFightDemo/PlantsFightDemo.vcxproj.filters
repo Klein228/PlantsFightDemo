@@ -16,6 +16,9 @@
     <Filter Include="头文件\scene">
       <UniqueIdentifier>{77885c1c-6bb3-4283-bda3-51b74377a931}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\player">
+      <UniqueIdentifier>{25e870ad-8948-4be6-9e80-270d66f8e082}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,6 +61,12 @@
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SunFlower.h">
+      <Filter>头文件\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

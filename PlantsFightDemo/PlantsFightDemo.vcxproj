@@ -135,10 +135,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SelectScene.h" />
+    <ClInclude Include="SunFlower.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Vector2.h" />

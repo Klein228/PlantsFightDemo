@@ -34,6 +34,24 @@ IMAGE img_2P_selector_btn_right_down;
 IMAGE img_2P_selector_btn_left;
 IMAGE img_2P_selector_btn_left_down;
 IMAGE img_vs;
+//玩家角色资源
+Atlas atlas_sunflower_run;
+Atlas atlas_sunflower_idle;
+Atlas atlas_sunflower_die;
+Atlas atlas_sunflower_attack; 
+Atlas atlas_sunflower_run_left;
+Atlas atlas_sunflower_idle_left;
+Atlas atlas_sunflower_die_left;
+Atlas atlas_sunflower_attack_left;
+
+Atlas atlas_peashooter_run;
+Atlas atlas_peashooter_idle;
+Atlas atlas_peashooter_die;
+Atlas atlas_peashooter_attack;
+Atlas atlas_peashooter_run_left;
+Atlas atlas_peashooter_idle_left;
+Atlas atlas_peashooter_die_left;
+Atlas atlas_peashooter_attack_left;
 //游戏场景资源加载
 
 
@@ -74,6 +92,23 @@ void load_game_resources()
 	flip_image(&img_2P_selector_btn_right, &img_2P_selector_btn_left);
 	flip_image(&img_2P_selector_btn_right_down, &img_2P_selector_btn_left_down);
 	loadimage(&img_vs, L"resources/VS.png");
+	atlas_sunflower_idle.load_from_file(L"resources/sunflower_idle_%d.png", 8);
+	atlas_sunflower_die.load_from_file(L"resources/sunflower_die_%d.png", 2);
+	atlas_sunflower_run.load_from_file(L"resources/sunflower_run_%d.png", 5);
+	atlas_sunflower_attack.load_from_file(L"resources/sunflower_attack_ex_%d.png", 9);
+	flip_atlas(atlas_sunflower_idle, atlas_sunflower_idle_left);
+	flip_atlas(atlas_sunflower_attack, atlas_sunflower_attack_left);
+	flip_atlas(atlas_sunflower_die, atlas_sunflower_die_left);
+	flip_atlas(atlas_sunflower_run, atlas_sunflower_run_left);
+
+	atlas_peashooter_idle.load_from_file(L"resources/peashooter_idle_%d.png", 9);
+	atlas_peashooter_die.load_from_file(L"resources/peashooter_die_%d.png", 4);
+	atlas_peashooter_run.load_from_file(L"resources/peashooter_run_%d.png", 5);
+	atlas_peashooter_attack.load_from_file(L"resources/peashooter_attack_ex_%d.png", 3);
+	flip_atlas(atlas_peashooter_idle, atlas_peashooter_idle_left);
+	flip_atlas(atlas_peashooter_attack, atlas_peashooter_attack_left);
+	flip_atlas(atlas_peashooter_die, atlas_peashooter_die_left);
+	flip_atlas(atlas_peashooter_run, atlas_peashooter_run_left);
 	//音乐
 	mciSendString(_T("open resources/bgm_menu.mp3 alias bgm_menu"), NULL, 0, NULL);
 	mciSendString(_T("open resources/bgm_game.mp3 alias bgm_game"), NULL, 0, NULL);

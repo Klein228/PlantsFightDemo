@@ -21,9 +21,19 @@ extern IMAGE img_2P_selector_btn_right_down;
 extern IMAGE img_2P_selector_btn_left;
 extern IMAGE img_2P_selector_btn_left_down;
 extern IMAGE img_vs;
+extern Atlas atlas_sunflower_idle;
+extern Atlas atlas_sunflower_idle_left;
+extern Atlas atlas_peashooter_idle;
+extern Atlas atlas_peashooter_idle_left;
 class SelectScene : public Scene
 {
 public:
+	enum Character
+	{
+		peashooter,
+		sunflower,
+		countnum
+	};
 	SelectScene() {}
 	~SelectScene() {}
 	void on_enter()
@@ -57,6 +67,24 @@ public:
 			btn_2P_left_down = false;
 			btn_2P_right_down = false;
 			});
+		//¼ÓÈë¶¯»­
+		animation_1P_peashooter.set_atlas(&atlas_peashooter_idle);
+		animation_1P_peashooter.set_interval(200);
+		animation_1P_peashooter.set_loop(true);
+		animation_1P_sunflower.set_atlas(&atlas_sunflower_idle);
+		animation_1P_sunflower.set_interval(200);
+		animation_1P_sunflower.set_loop(true);
+		animation_2P_peashooter.set_atlas(&atlas_peashooter_idle_left);
+		animation_2P_peashooter.set_interval(200);
+		animation_2P_peashooter.set_loop(true);
+		animation_2P_sunflower.set_atlas(&atlas_sunflower_idle_left);
+		animation_2P_sunflower.set_interval(200);
+		animation_2P_sunflower.set_loop(true);
+
+		pos_1P_animation.x = pos_table.x + (img_character_table.getwidth() - atlas_peashooter_idle.get_img_at(0)->getwidth()) / 2;
+		pos_1P_animation.y = pos_table.y + pos_table.y * 2/ 3;
+		pos_2P_animation.x = pos_table_flipped.x + (img_character_table.getwidth() - atlas_peashooter_idle.get_img_at(0)->getwidth()) / 2;
+		pos_2P_animation.y = pos_1P_animation.y;
 	}
 	void on_input(const ExMessage& msg)
 	{
@@ -67,6 +95,7 @@ public:
 				msg.y >= pos_1P_selector_btn_left.y && msg.y <= pos_1P_selector_btn_left.y + img_1P_selector_btn_left.getheight())
 			{
 				btn_1P_left_down = true;
+				character_1P = (enum Character)(((int)character_1P-1+countnum)%countnum);
 				timer_btn_down.restart();
 				mciSendString(L"play btn from 0", NULL, 0, NULL);
 			}
@@ -79,6 +108,7 @@ public:
 				msg.y >= pos_1P_selector_btn_right.y && msg.y <= pos_1P_selector_btn_right.y + img_1P_selector_btn_right.getheight())
 			{
 				btn_1P_right_down = true;
+				character_1P = (enum Character)(((int)character_1P + 1 + countnum) % countnum);
 				timer_btn_down.restart();
 				mciSendString(L"play btn from 0", NULL, 0, NULL);
 			}
@@ -91,6 +121,7 @@ public:
 				msg.y >= pos_2P_selector_btn_left.y && msg.y <= pos_2P_selector_btn_left.y + img_2P_selector_btn_left.getheight())
 			{
 				btn_2P_left_down = true;
+				character_2P = (enum Character)(((int)character_2P - 1 + countnum) % countnum);
 				timer_btn_down.restart();
 				mciSendString(L"play btn from 0", NULL, 0, NULL);
 			}
@@ -103,6 +134,7 @@ public:
 				msg.y >= pos_2P_selector_btn_right.y && msg.y <= pos_2P_selector_btn_right.y + img_2P_selector_btn_right.getheight())
 			{
 				btn_2P_right_down = true;
+				character_2P = (enum Character)(((int)character_2P + 1 + countnum) % countnum);
 				timer_btn_down.restart();
 				mciSendString(L"play btn from 0", NULL, 0, NULL);
 			}
@@ -115,6 +147,32 @@ public:
 	void on_updata(int delta)
 	{
 		timer_btn_down.on_updata(delta);
+		switch (character_1P)
+		{
+		case SelectScene::peashooter:
+			animation_1P_peashooter.on_updata(delta);
+			break;
+		case SelectScene::sunflower:
+			animation_1P_sunflower.on_updata(delta);
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
+		switch (character_2P)
+		{
+		case SelectScene::peashooter:
+			animation_2P_peashooter.on_updata(delta);
+			break;
+		case SelectScene::sunflower:
+			animation_2P_sunflower.on_updata(delta);
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
 	}
 	void on_draw()
 	{
@@ -132,6 +190,33 @@ public:
 		putimage_alpha(pos_1P_selector_btn_right.x, pos_1P_selector_btn_right.y, btn_1P_right_down ? &img_1P_selector_btn_right_down : &img_1P_selector_btn_right);
 		putimage_alpha(pos_2P_selector_btn_left.x, pos_2P_selector_btn_left.y, btn_2P_left_down ? &img_2P_selector_btn_left_down : &img_2P_selector_btn_left);
 		putimage_alpha(pos_2P_selector_btn_right.x, pos_2P_selector_btn_right.y, btn_2P_right_down ? &img_2P_selector_btn_right_down : &img_2P_selector_btn_right);
+		
+		switch (character_1P)
+		{
+		case SelectScene::peashooter:
+			animation_1P_peashooter.on_draw(pos_1P_animation.x,pos_1P_animation.y);
+			break;
+		case SelectScene::sunflower:
+			animation_1P_sunflower.on_draw(pos_1P_animation.x, pos_1P_animation.y);
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
+		switch (character_2P)
+		{
+		case SelectScene::peashooter:
+			animation_2P_peashooter.on_draw(pos_2P_animation.x,pos_2P_animation.y);
+			break;
+		case SelectScene::sunflower:
+			animation_2P_sunflower.on_draw(pos_2P_animation.x, pos_2P_animation.y);
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
 	}
 	void on_exit()
 	{
@@ -149,9 +234,17 @@ private:
 	POINT pos_2P_selector_btn_right = { 0,0 };
 	POINT pos_2P_selector_btn_left = { 0,0 };
 	POINT pos_vs = { 0,0 };
+	POINT pos_1P_animation = { 0,0 };
+	POINT pos_2P_animation = { 0,0 };
 	bool btn_1P_left_down = false;
 	bool btn_1P_right_down = false;
 	bool btn_2P_left_down = false;
 	bool btn_2P_right_down = false;
 	Timer timer_btn_down;
+	Animation animation_1P_sunflower;
+	Animation animation_1P_peashooter;
+	Animation animation_2P_sunflower;
+	Animation animation_2P_peashooter;
+	Character character_1P = sunflower;
+	Character character_2P = peashooter;
 };
