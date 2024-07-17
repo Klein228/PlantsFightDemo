@@ -290,7 +290,9 @@ public:
 			break;
 		}
 		player1->set_id(1);
+		player1->init_pos();
 		player2->set_id(2);
+		player2->init_pos();
 	}
 
 private:

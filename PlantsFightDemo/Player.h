@@ -3,6 +3,8 @@
 #include"Camera.h"
 #include"Vector2.h"
 #include"Animation.h"
+#include"Platform.h"
+extern std::vector<Platform> list_platform;
 class Player
 {
 public:
@@ -30,6 +32,7 @@ public:
 				switch (msg.vkcode)
 				{
 				case 'W':
+					if (is_collision)
 					up_key_down = true;
 					break;
 				case 'A':
@@ -53,7 +56,7 @@ public:
 				switch (msg.vkcode)
 				{
 				case VK_UP:
-					up_key_down = true;
+					if (is_collision)up_key_down = true;
 					break;
 				case VK_LEFT:
 					left_key_down = true;
@@ -84,7 +87,7 @@ public:
 				switch (msg.vkcode)
 				{
 				case 'W':
-					up_key_down = false;
+					if (!is_collision)up_key_down = false;
 					break;
 				case 'A':
 					left_key_down = false;
@@ -105,7 +108,7 @@ public:
 				switch (msg.vkcode)
 				{
 				case VK_UP:
-					up_key_down = false;
+					if(!is_collision)up_key_down = false;
 					break;
 				case VK_LEFT:
 					left_key_down = false;
@@ -131,21 +134,30 @@ public:
 	{
 		if (left_key_down)
 		{
-			if (right_key_down)speed_vector.x = 0;
+			if (right_key_down)
+			{
+				speed_vector.x = 0;
+				state = playerState::idle;
+			}
 			else
 			{
 				speed_vector.x = 0 - run_speed;
+				state = playerState::run;
 			}
 		}
 		else
 		{
-			if (right_key_down)speed_vector.x = run_speed;
+			if (right_key_down)
+			{
+				speed_vector.x = run_speed;
+				state = playerState::run;
+			}
 			else
 			{
 				speed_vector.x = 0;
+				state = playerState::idle;
 			}
 		}
-		
 		if (facing_right)
 		{
 			switch (state)
@@ -187,8 +199,12 @@ public:
 			}
 		}
 		//
-		pos_player.x += speed_vector.x;
-		pos_player.y += speed_vector.y;
+		move_collision(delta);
+		if (up_key_down)
+		{
+			speed_vector.y = 0 - jump_speed;
+			up_key_down = false;
+		}
 	};
 	virtual void on_draw(Camera& camera) 
 	{
@@ -233,11 +249,42 @@ public:
 			}
 		}
 	};
-
+	virtual void move_collision(int delta)
+	{
+		pos_player.x += speed_vector.x * delta;
+		auto temp = pos_player.y;
+		speed_vector.y += gravity * delta;
+		pos_player.y += speed_vector.y * delta;
+		if (speed_vector.y > 0)
+		{
+			for (size_t i = 0; i < list_platform.size(); i++)
+			{
+				if (temp+img_size.y<=list_platform[i].shape.y && pos_player.y+img_size.y>=list_platform[i].shape.y&&
+					pos_player.x+img_size.x-list_platform[i].shape.x_begin<=list_platform[i].shape.x_end- list_platform[i].shape.x_begin+img_size.x&&
+					pos_player.x + img_size.x - list_platform[i].shape.x_begin>=0)
+				{
+					pos_player.y = list_platform[i].shape.y-img_size.y;
+					speed_vector.y = 0;
+					is_collision=true;
+					return;
+				}
+			}
+		}
+		is_collision=false;
+	}
+	virtual void init_pos()
+	{
+		if (id == 1)pos_player = { 100,0 };
+		else pos_player = { 1000,0 };
+	}
 protected:
 	int id=1;
 	Vector2 speed_vector = { 0.0,0.0 };
-	int run_speed=10;
+	POINT img_size = { 0,0 };
+	float gravity = 1e-3;
+	float run_speed=0.1;
+	float jump_speed = 0.65;
+	bool is_collision = false;
 	playerState state = playerState::idle;
 	Vector2 pos_player = { 0,0 };
 	Animation animation_player_run_left;

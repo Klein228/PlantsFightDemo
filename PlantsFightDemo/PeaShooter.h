@@ -14,7 +14,9 @@ class PeaShooter:public Player
 public:
 	PeaShooter()
 	{
-		this->run_speed = 3;
+		this->run_speed = 0.35;
+		this->img_size.x = atlas_peashooter_idle_right.get_img_at(0)->getwidth();
+		this->img_size.y = atlas_peashooter_idle_right.get_img_at(0)->getheight();
 		animation_player_idle_left.set_atlas(&atlas_peashooter_idle_left);
 		animation_player_idle_left.set_interval(100);
 		animation_player_idle_left.set_loop(true);
