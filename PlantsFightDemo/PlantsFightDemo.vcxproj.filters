@@ -62,10 +62,16 @@
     <ClInclude Include="Timer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="SunFlower.h">
+      <Filter>头文件\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SunFlower.h">
+    <ClInclude Include="PeaShooter.h">
+      <Filter>头文件\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>头文件\player</Filter>
     </ClInclude>
   </ItemGroup>

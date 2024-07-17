@@ -12,6 +12,7 @@ public:
 		Game,
 		Select
 	};
+	
 public:
 	SceneManager() = default;
 	~SceneManager() = default;

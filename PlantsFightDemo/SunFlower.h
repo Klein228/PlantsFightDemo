@@ -4,105 +4,67 @@
 #include"Timer.h"
 #include"Vector2.h"
 #include<graphics.h>
-extern Atlas atlas_sunflower_run;
-extern Atlas atlas_sunflower_idle;
-extern Atlas atlas_sunflower_die;
-extern Atlas atlas_sunflower_attack;
+extern Atlas atlas_sunflower_run_right;
+extern Atlas atlas_sunflower_idle_right;
+extern Atlas atlas_sunflower_die_right;
+extern Atlas atlas_sunflower_attack_right;
+extern Atlas atlas_sunflower_run_left;
+extern Atlas atlas_sunflower_idle_left;
+extern Atlas atlas_sunflower_die_left;
+extern Atlas atlas_sunflower_attack_left;
+
 class SunFlower : public Player
 {
 public:
-	enum Action
-	{
-		idle,
-		run,
-		attack,
-		die
-	};
+
 	SunFlower()
 	{
-		on_enter();
+		this->run_speed = 5;
+		animation_player_idle_left.set_atlas(&atlas_sunflower_idle_left);
+		animation_player_idle_left.set_interval(100);
+		animation_player_idle_left.set_loop(true);
+		animation_player_idle_right.set_atlas(&atlas_sunflower_idle_right);
+		animation_player_idle_right.set_interval(100);
+		animation_player_idle_right.set_loop(true);
+
+		animation_player_run_left.set_atlas(&atlas_sunflower_run_left);
+		animation_player_run_left.set_interval(100);
+		animation_player_run_left.set_loop(true);
+		animation_player_run_right.set_atlas(&atlas_sunflower_run_right);
+		animation_player_run_right.set_interval(100);
+		animation_player_run_right.set_loop(true);
+
+		animation_player_die_left.set_atlas(&atlas_sunflower_die_left);
+		animation_player_die_left.set_interval(100);
+		animation_player_die_left.set_loop(true);
+		animation_player_die_right.set_atlas(&atlas_sunflower_die_right);
+		animation_player_die_right.set_interval(100);
+		animation_player_die_right.set_loop(true);
+
+		animation_player_attack_left.set_atlas(&atlas_sunflower_attack_left);
+		animation_player_attack_left.set_interval(100);
+		animation_player_attack_left.set_loop(false);
+		animation_player_attack_right.set_atlas(&atlas_sunflower_attack_right);
+		animation_player_attack_right.set_interval(100);
+		animation_player_attack_right.set_loop(false);
+
 	}
 	~SunFlower(){}
-	void on_enter()
+
+	void on_input(const ExMessage& msg)
 	{
-		animation_idle.set_atlas(&atlas_sunflower_idle);
-		animation_idle.set_interval(100);
-		animation_idle.set_loop(true);
-		animation_attack.set_atlas(&atlas_sunflower_attack);
-		animation_attack.set_interval(100);
-		animation_attack.set_loop(false);
-		animation_run.set_atlas(&atlas_sunflower_run);
-		animation_run.set_interval(100);
-		animation_run.set_loop(true);
-		animation_die.set_atlas(&atlas_sunflower_die);
-		animation_die.set_interval(200);
-		animation_die.set_loop(false);
-		animation_die.set_callback([&]() {
-			//on_exit();
-			});
-	}
-	void on_input(ExMessage& msg)
-	{
+		Player::on_input(msg);
 
 	}
 	void on_updata(int delta)
 	{
-		switch (action)
-		{
-		case SunFlower::idle:
-			animation_idle.on_updata(delta);
-			break;
-		case SunFlower::run:
-			animation_run.on_updata(delta);
-			break;
-		case SunFlower::attack:
-			animation_attack.on_updata(delta);
-			break;
-		case SunFlower::die:
-			animation_die.on_updata(delta);
-			break;
-		default:
-			break;
-		}
+		Player::on_updata(delta);
 	}
-	void on_draw()
+	void on_draw(Camera &camera)
 	{
-		switch (action)
-		{
-		case SunFlower::idle:
-			animation_idle.on_draw(location.x,location.y);
-			break;
-		case SunFlower::run:
-			animation_run.on_draw(location.x, location.y);
-			break;
-		case SunFlower::attack:
-			animation_attack.on_draw(location.x, location.y);
-			break;
-		case SunFlower::die:
-			animation_die.on_draw(location.x, location.y);
-			break;
-		default:
-			break;
-		}
-	}
-	void on_exit()
-	{
-		this->~SunFlower();
-	}
-	void setLocation(Vector2 v)
-	{
-		location.x = v.x;
-		location.y = v.y;
+		Player::on_draw(camera);
 	}
 private:
-	Action action = idle;
-	Animation animation_idle;
-	Animation animation_run;
-	Animation animation_die;
-	Animation animation_attack;
-	Vector2 location = {0,0};
-	Timer timer_run;
-	Timer timer_idle;
-	Timer timer_die;
-	Timer timer_attack;
+	
+
 };

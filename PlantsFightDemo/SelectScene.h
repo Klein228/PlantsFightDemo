@@ -1,6 +1,9 @@
 #pragma once
 #include"Scene.h"
 #include"SceneManager.h"
+#include"GameScene.h"
+#include"PeaShooter.h"
+#include"SunFlower.h"
 extern SceneManager scene_manager;
 extern const POINT window_size;
 extern IMAGE img_select_scene_background;
@@ -21,10 +24,14 @@ extern IMAGE img_2P_selector_btn_right_down;
 extern IMAGE img_2P_selector_btn_left;
 extern IMAGE img_2P_selector_btn_left_down;
 extern IMAGE img_vs;
-extern Atlas atlas_sunflower_idle;
+extern Atlas atlas_sunflower_idle_right;
 extern Atlas atlas_sunflower_idle_left;
-extern Atlas atlas_peashooter_idle;
+extern Atlas atlas_peashooter_idle_right;
 extern Atlas atlas_peashooter_idle_left;
+extern IMAGE img_1P_desc;
+extern IMAGE img_2P_desc;
+extern Player* player1;
+extern Player* player2;
 class SelectScene : public Scene
 {
 public:
@@ -36,6 +43,13 @@ public:
 	};
 	SelectScene() {}
 	~SelectScene() {}
+	void outtextxy_shaded(int x, int y, LPCTSTR s)
+	{
+		settextcolor(RGB(45, 45, 45));
+		outtextxy(x + 3, y + 3, s);
+		settextcolor(RGB(255, 255, 255));
+		outtextxy(x, y, s);
+	}
 	void on_enter()
 	{
 		pos_start_game_tip.x = (window_size.x - img_start_game_tip.getwidth()) / 2;
@@ -45,9 +59,9 @@ public:
 		pos_table_flipped.x = (window_size.x - pos_table.x - img_character_table.getwidth());
 		pos_table_flipped.y = pos_table.y;
 		pos_1P.x = pos_table.x + (img_character_table.getwidth() - img_1P.getwidth()) / 2;
-		pos_1P.y = pos_table.y - img_1P.getheight();
+		pos_1P.y = pos_table.y - img_1P.getheight()*3/2;
 		pos_2P.x = pos_table_flipped.x + (img_character_table.getwidth() - img_1P.getwidth()) / 2;
-		pos_2P.y = pos_table_flipped.y - img_1P.getheight();
+		pos_2P.y = pos_1P.y;
 		pos_1P_selector_btn_left.x = pos_table.x - img_1P_selector_btn_left.getwidth();
 		pos_1P_selector_btn_left.y = pos_table.y + img_character_table.getheight() * 3 / 10;
 		pos_1P_selector_btn_right.x = pos_table.x + img_character_table.getwidth();
@@ -58,6 +72,11 @@ public:
 		pos_2P_selector_btn_right.y = pos_2P_selector_btn_left.y;
 		pos_vs.x = (window_size.x - img_vs.getwidth()) / 2;
 		pos_vs.y = (window_size.y - img_vs.getheight()) / 2;
+		pos_1P_desc.x = pos_table.x;
+		pos_1P_desc.y = pos_table.y + img_character_table.getheight() * 5 / 4;
+		pos_2P_desc.x = pos_table_flipped.x;
+		pos_2P_desc.y = pos_table_flipped.y + img_character_table.getheight() * 5 / 4;
+
 		//按钮时间计时器
 		timer_btn_down.set_wait_time(100);
 		timer_btn_down.set_one_shot(true);
@@ -68,10 +87,10 @@ public:
 			btn_2P_right_down = false;
 			});
 		//加入动画
-		animation_1P_peashooter.set_atlas(&atlas_peashooter_idle);
+		animation_1P_peashooter.set_atlas(&atlas_peashooter_idle_right);
 		animation_1P_peashooter.set_interval(200);
 		animation_1P_peashooter.set_loop(true);
-		animation_1P_sunflower.set_atlas(&atlas_sunflower_idle);
+		animation_1P_sunflower.set_atlas(&atlas_sunflower_idle_right);
 		animation_1P_sunflower.set_interval(200);
 		animation_1P_sunflower.set_loop(true);
 		animation_2P_peashooter.set_atlas(&atlas_peashooter_idle_left);
@@ -81,10 +100,15 @@ public:
 		animation_2P_sunflower.set_interval(200);
 		animation_2P_sunflower.set_loop(true);
 
-		pos_1P_animation.x = pos_table.x + (img_character_table.getwidth() - atlas_peashooter_idle.get_img_at(0)->getwidth()) / 2;
+		pos_1P_animation.x = pos_table.x + (img_character_table.getwidth() - atlas_peashooter_idle_right.get_img_at(0)->getwidth()) / 2;
 		pos_1P_animation.y = pos_table.y + pos_table.y * 2/ 3;
-		pos_2P_animation.x = pos_table_flipped.x + (img_character_table.getwidth() - atlas_peashooter_idle.get_img_at(0)->getwidth()) / 2;
+		pos_2P_animation.x = pos_table_flipped.x + (img_character_table.getwidth() - atlas_peashooter_idle_left.get_img_at(0)->getwidth()) / 2;
 		pos_2P_animation.y = pos_1P_animation.y;
+
+		pos_text_1P.x = pos_1P_animation.x + 20;
+		pos_text_1P.y = pos_1P_animation.y + 120;
+		pos_text_2P.x = pos_2P_animation.x + 20;
+		pos_text_2P.y = pos_2P_animation.y + 120;
 	}
 	void on_input(const ExMessage& msg)
 	{
@@ -143,6 +167,18 @@ public:
 				btn_2P_right_down = false;
 			}
 		}
+		if (msg.message == WM_KEYDOWN)
+		{
+			switch (msg.vkcode)
+			{  
+			//"Enter"
+			case 13:
+				scene_manager.switch_to(SceneManager::sceneType::Game);
+			default:
+				break;
+			}
+		}
+		
 	}
 	void on_updata(int delta)
 	{
@@ -190,14 +226,18 @@ public:
 		putimage_alpha(pos_1P_selector_btn_right.x, pos_1P_selector_btn_right.y, btn_1P_right_down ? &img_1P_selector_btn_right_down : &img_1P_selector_btn_right);
 		putimage_alpha(pos_2P_selector_btn_left.x, pos_2P_selector_btn_left.y, btn_2P_left_down ? &img_2P_selector_btn_left_down : &img_2P_selector_btn_left);
 		putimage_alpha(pos_2P_selector_btn_right.x, pos_2P_selector_btn_right.y, btn_2P_right_down ? &img_2P_selector_btn_right_down : &img_2P_selector_btn_right);
+		putimage_alpha(pos_1P_desc.x, pos_1P_desc.y, &img_1P_desc);
+		putimage_alpha(pos_2P_desc.x, pos_2P_desc.y, &img_2P_desc);
 		
 		switch (character_1P)
 		{
 		case SelectScene::peashooter:
 			animation_1P_peashooter.on_draw(pos_1P_animation.x,pos_1P_animation.y);
+			outtextxy_shaded(pos_text_1P.x, pos_text_1P.y, text_peashooter);
 			break;
 		case SelectScene::sunflower:
 			animation_1P_sunflower.on_draw(pos_1P_animation.x, pos_1P_animation.y);
+			outtextxy_shaded(pos_text_1P.x, pos_text_1P.y, text_sunflower);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -208,9 +248,11 @@ public:
 		{
 		case SelectScene::peashooter:
 			animation_2P_peashooter.on_draw(pos_2P_animation.x,pos_2P_animation.y);
+			outtextxy_shaded(pos_text_2P.x, pos_text_2P.y, text_peashooter);
 			break;
 		case SelectScene::sunflower:
 			animation_2P_sunflower.on_draw(pos_2P_animation.x, pos_2P_animation.y);
+			outtextxy_shaded(pos_text_2P.x, pos_text_2P.y, text_sunflower);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -220,7 +262,35 @@ public:
 	}
 	void on_exit()
 	{
-
+		mciSendString(L"stop bgm_menu", NULL, 0, NULL);
+		switch (character_1P)
+		{
+		case SelectScene::peashooter:
+			player1 = new PeaShooter();
+			break;
+		case SelectScene::sunflower:
+			player1 = new SunFlower();
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
+		switch (character_2P)
+		{
+		case SelectScene::peashooter:
+			player2 = new PeaShooter();
+			break;
+		case SelectScene::sunflower:
+			player2 = new SunFlower();
+			break;
+		case SelectScene::countnum:
+			break;
+		default:
+			break;
+		}
+		player1->set_id(1);
+		player2->set_id(2);
 	}
 
 private:
@@ -236,6 +306,10 @@ private:
 	POINT pos_vs = { 0,0 };
 	POINT pos_1P_animation = { 0,0 };
 	POINT pos_2P_animation = { 0,0 };
+	POINT pos_1P_desc = { 0,0 };
+	POINT pos_2P_desc = { 0,0 };
+	POINT pos_text_1P = { 0,0 };
+	POINT pos_text_2P = { 0,0 };
 	bool btn_1P_left_down = false;
 	bool btn_1P_right_down = false;
 	bool btn_2P_left_down = false;
@@ -247,4 +321,6 @@ private:
 	Animation animation_2P_peashooter;
 	Character character_1P = sunflower;
 	Character character_2P = peashooter;
+	LPCTSTR text_peashooter=L"豌豆射手";
+	LPCTSTR text_sunflower=L"向日葵";
 };
