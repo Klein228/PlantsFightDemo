@@ -63,6 +63,10 @@ IMAGE img_hills;
 IMAGE img_sky;
 IMAGE img_platform_large;
 IMAGE img_platform_small;
+//◊”µØ
+Atlas atlas_sunflower_bullet;
+Atlas atlas_sunflower_bullet_ex;
+
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -131,6 +135,8 @@ void load_game_resources()
 	flip_atlas(atlas_peashooter_die_right, atlas_peashooter_die_left);
 	flip_atlas(atlas_peashooter_run_right, atlas_peashooter_run_left);
 
+	atlas_sunflower_bullet.load_from_file(L"resources/sun_%d.png", 5);
+	atlas_sunflower_bullet_ex.load_from_file(L"resources/sun_ex_%d.png", 5);
 	//“Ù¿÷
 	mciSendString(_T("open resources/bgm_menu.mp3 alias bgm_menu"), NULL, 0, NULL);
 	mciSendString(_T("open resources/bgm_game.mp3 alias bgm_game"), NULL, 0, NULL);

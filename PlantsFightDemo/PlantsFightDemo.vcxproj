@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Atlas.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MenuScene.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SelectScene.h" />
+    <ClInclude Include="SunBullet.h" />
     <ClInclude Include="SunFlower.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="utils.h" />

@@ -96,9 +96,9 @@ public:
 					right_key_down = false;
 					break;
 				case 'F':
-					attack_key_down = false;
+					//attack_key_down = false;
 				case 'G':
-					ex_key_down = false;
+					//ex_key_down = false;
 					break;
 				default:
 					break;
@@ -117,9 +117,9 @@ public:
 					right_key_down = false;
 					break;
 				case '?':
-					attack_key_down = false;
+					//attack_key_down = false;
 				case '>':
-					ex_key_down = false;
+					//ex_key_down = false;
 					break;
 				default:
 					break;
@@ -132,6 +132,7 @@ public:
 	};
 	virtual void on_updata(int delta) 
 	{
+		//¸üÐÂÍæ¼Ò×´Ì¬,×´Ì¬×°»»
 		if (left_key_down)
 		{
 			if (right_key_down)
@@ -158,6 +159,7 @@ public:
 				state = playerState::idle;
 			}
 		}
+		//¹¥»÷×´Ì¬
 		if (facing_right)
 		{
 			switch (state)
@@ -198,7 +200,8 @@ public:
 				break;
 			}
 		}
-		//
+
+		//Åö×²¼ì²â ÌøÔ¾
 		move_collision(delta);
 		if (up_key_down)
 		{
