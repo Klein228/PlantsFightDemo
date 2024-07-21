@@ -83,6 +83,12 @@
     <ClInclude Include="SunBullet.h">
       <Filter>头文件\bullet</Filter>
     </ClInclude>
+    <ClInclude Include="SunBulletEx.h">
+      <Filter>头文件\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="PeaBullet.h">
+      <Filter>头文件\bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlantsFightDemo.rc">

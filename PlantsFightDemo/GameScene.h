@@ -9,6 +9,8 @@ extern IMAGE img_hills;
 extern IMAGE img_sky;
 extern IMAGE img_platform_large;
 extern IMAGE img_platform_small;
+extern IMAGE img_cursor_1P;
+extern IMAGE img_cursor_2P;
 extern Camera main_camera;
 extern std::vector<Platform> list_platform;
 extern bool is_debug;
@@ -54,6 +56,14 @@ public:
         small_platform_3.shape.x_begin = small_platform_3.pos_render.x + 40;
         small_platform_3.shape.x_end = small_platform_3.pos_render.x + img_platform_small.getwidth() - 40;
         small_platform_3.shape.y = small_platform_3.pos_render.y + img_platform_small.getheight() / 2;
+        //光标尺寸初始化
+        size_cursor = { img_cursor_1P.getwidth(),img_cursor_1P.getheight() };
+        //光标显示计时初始化
+        timer_cursor_view.set_one_shot(true);
+        timer_cursor_view.set_wait_time(5000);
+        timer_cursor_view.set_callback([&]() {
+            cursor_timeout = true;
+            });
     }
     void on_input(const ExMessage& msg)
     {
@@ -74,8 +84,14 @@ public:
     void on_updata(int delta)
     {
         main_camera.on_updata(delta);
+        timer_cursor_view.on_updata(delta);
+        player1->bullets_collision(player2->get_bullets());
+        player2->bullets_collision(player1->get_bullets());
+        player1->set_enemy_player_center_pos(player2->get_pos_center());
+        player2->set_enemy_player_center_pos(player1->get_pos_center());
         player1->on_updata(delta);
         player2->on_updata(delta);
+        
     }
     void on_draw()
     {
@@ -89,9 +105,20 @@ public:
         {
             settextcolor(RED);
             outtextxy(0, 150, L"调试模式已开启,按Q关闭");
+            
+        }
+        if (!cursor_timeout)
+        {
+            putimage_alpha(player1->get_pos_center().x - size_cursor.x / 2, player1->get_pos_center().y - size_cursor.y-50 , &img_cursor_1P);
+            putimage_alpha(player2->get_pos_center().x - size_cursor.x / 2, player2->get_pos_center().y - size_cursor.y-50 , &img_cursor_2P);
+
         }
         player1->on_draw(main_camera);
         player2->on_draw(main_camera);
+        //分离子弹和玩家的渲染,画面表现更真实
+        player1->bullet_draw(main_camera);
+        player2->bullet_draw(main_camera);
+        
     }
     void on_exit() 
     {
@@ -100,6 +127,9 @@ public:
 private:
     POINT pos_hills = { 0,0 };
     POINT pos_sky= { 0,0 };
+    Timer timer_cursor_view;//光标显示时间计时
+    POINT size_cursor = { 0,0 };//光标尺寸便于渲染定位
+    bool cursor_timeout = false;//光标计时结束标志
     std::function<POINT()> callback;
 };
 

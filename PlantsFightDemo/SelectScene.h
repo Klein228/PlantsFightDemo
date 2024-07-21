@@ -266,10 +266,10 @@ public:
 		switch (character_1P)
 		{
 		case SelectScene::peashooter:
-			player1 = new PeaShooter();
+			player1 = new PeaShooter(1);
 			break;
 		case SelectScene::sunflower:
-			player1 = new SunFlower();
+			player1 = new SunFlower(1);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -279,20 +279,17 @@ public:
 		switch (character_2P)
 		{
 		case SelectScene::peashooter:
-			player2 = new PeaShooter();
+			player2 = new PeaShooter(2);
 			break;
 		case SelectScene::sunflower:
-			player2 = new SunFlower();
+			player2 = new SunFlower(2);
 			break;
 		case SelectScene::countnum:
 			break;
 		default:
 			break;
 		}
-		player1->set_id(1);
-		player1->init_pos();
-		player2->set_id(2);
-		player2->init_pos();
+
 	}
 
 private:

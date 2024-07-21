@@ -4,6 +4,7 @@
 #include"Vector2.h"
 #include"Animation.h"
 #include"Platform.h"
+#include"bullet.h"
 extern std::vector<Platform> list_platform;
 class Player
 {
@@ -16,7 +17,11 @@ public:
 		attack
 	};
 public:
-	Player(){}
+	Player(int id)
+	{
+		set_id(id);
+		init_pos();
+	}
 	~Player(){}
 	virtual void set_id(int id)
 	{
@@ -45,6 +50,7 @@ public:
 					break;
 				case 'F':
 					attack_key_down = true;
+					break;
 				case 'G':
 					ex_key_down = true;
 					break;
@@ -66,9 +72,12 @@ public:
 					right_key_down = true;
 					facing_right = true;
 					break;
-				case '?':
+					//">"
+				case 190:
 					attack_key_down = true;
-				case '>':
+					break;
+					//"?"
+				case 191:
 					ex_key_down = true;
 					break;
 				default:
@@ -96,9 +105,10 @@ public:
 					right_key_down = false;
 					break;
 				case 'F':
-					//attack_key_down = false;
+					attack_key_down = false;
+					break;
 				case 'G':
-					//ex_key_down = false;
+					ex_key_down = false;
 					break;
 				default:
 					break;
@@ -117,9 +127,10 @@ public:
 					right_key_down = false;
 					break;
 				case '?':
-					//attack_key_down = false;
+					attack_key_down = false;
+					break;
 				case '>':
-					//ex_key_down = false;
+					ex_key_down = false;
 					break;
 				default:
 					break;
@@ -201,7 +212,7 @@ public:
 			}
 		}
 
-		//碰撞检测 跳跃
+		//平台碰撞检测 跳跃
 		move_collision(delta);
 		if (up_key_down)
 		{
@@ -211,6 +222,10 @@ public:
 	};
 	virtual void on_draw(Camera& camera) 
 	{
+		if (is_debug)
+		{
+			circle(get_pos_center().x, get_pos_center().y, radius_collision);
+		}
 		if (facing_right)
 		{
 			switch (state)
@@ -225,7 +240,7 @@ public:
 				animation_player_die_right.on_draw(pos_player.x, pos_player.y);
 				break;
 			case Player::playerState::attack:
-				//待加入
+				animation_player_attack_right.on_draw(pos_player.x, pos_player.y);
 				break;
 			default:
 				break;
@@ -245,13 +260,17 @@ public:
 				animation_player_die_left.on_draw(pos_player.x, pos_player.y);
 				break;
 			case Player::playerState::attack:
-				//待加入
+				animation_player_attack_left.on_draw(pos_player.x, pos_player.y);
 				break;
 			default:
 				break;
 			}
 		}
 	};
+	virtual void bullet_draw(Camera& camera)
+	{
+
+	}
 	virtual void move_collision(int delta)
 	{
 		pos_player.x += speed_vector.x * delta;
@@ -277,19 +296,107 @@ public:
 	}
 	virtual void init_pos()
 	{
-		if (id == 1)pos_player = { 100,0 };
-		else pos_player = { 1000,0 };
+		if (id == 1)
+		{
+			facing_right = true;
+			pos_player = { 100,0 };
+		}
+		else
+		{
+			facing_right = false;
+			pos_player = { 1000,0 };
+		}
+	}
+	virtual std::vector<Bullet*>* get_bullets()
+	{
+		return &bullets;
+	}
+	virtual void bullets_collision(std::vector<Bullet*>* blts)//处理外部子弹碰撞逻辑
+	{
+		for (size_t i = 0; i < blts->size(); i++)
+		{
+			Vector2 pos = blts->at(i)->get_center_pos();
+			float r = blts->at(i)->get_radius_collission();
+			Vector2 pos_p = get_pos_center();
+			float r_p = get_radius_collision();
+			float distance = get_distance(pos, pos_p);
+
+			if (distance <= r + r_p)
+			{
+				blts->at(i)->set_is_collision(true);
+				blood = (blood - blts->at(i)->get_bullet_damage() > 0) ? blood - blts->at(i)->get_bullet_damage() : 0;
+				
+				//player hurt()
+			}
+		}
+	}
+	void set_radius_collision(float f)
+	{
+		radius_collision = f;
+	}
+	float get_radius_collision()
+	{
+		return radius_collision;
+	}
+	Vector2 get_pos_center()//获取玩家中心位置
+	{
+		return { pos_player.x + img_size.x / 2,pos_player.y + img_size.y / 2 };
+	}
+	void updata_bullet_list()//更新子弹列表
+	{
+		int i = 0;
+		int j = bullets.size() - 1;
+		while (i<=j)
+		{
+			if (bullets[i]->get_is_collision())
+			{
+				energy = (energy + bullets[i]->get_energy() > 100) ? 100 : energy + bullets[i]->get_energy();
+			}
+			if (bullets[i]->get_is_out_window() || bullets[i]->get_is_exploded_over())
+			{
+				auto temp = bullets[i];
+				bullets[i] = bullets[j];
+				delete temp;
+				bullets.pop_back();
+				j--;
+			}
+			else
+			{
+				i++;
+			}
+		}
+	}
+	void set_enemy_player_center_pos(Vector2 v)
+	{
+		pos_enemy_player = v;
+	}
+	int get_blood()
+	{
+		return blood;
+	}
+	void set_blood(int b)
+	{
+		blood = b;
+	}
+	int get_energy()
+	{
+		return energy;
+	}
+	void set_energy(int e)
+	{
+		energy = e;
 	}
 protected:
-	int id=1;
-	Vector2 speed_vector = { 0.0,0.0 };
-	POINT img_size = { 0,0 };
-	float gravity = 1e-3;
-	float run_speed=0.1;
-	float jump_speed = 0.65;
-	bool is_collision = false;
-	playerState state = playerState::idle;
-	Vector2 pos_player = { 0,0 };
+	int id=1;//玩家id
+	Vector2 speed_vector = { 0.0,0.0 };//速度
+	POINT img_size = { 0,0 };//玩家图片大小
+	float gravity = 1e-3;//所受重力
+	float run_speed=0.1;//移动速度
+	float jump_speed = 0.65;//跳跃初始速度
+	bool is_collision = false;//是否碰撞到平台
+	playerState state = playerState::idle;//当前动画状态
+	Vector2 pos_player = { 0,0 };//玩家图片渲染位置
+	Vector2 pos_enemy_player = { 0,0 };//敌对玩家中心位置
 	Animation animation_player_run_left;
 	Animation animation_player_run_right;
 	Animation animation_player_idle_left;
@@ -298,11 +405,17 @@ protected:
 	Animation animation_player_die_right;
 	Animation animation_player_attack_left;
 	Animation animation_player_attack_right;
-	bool facing_right = true;
-
+	bool facing_right = true;//是否朝向右
+	//按键标志
 	bool left_key_down=false;
 	bool right_key_down = false;
 	bool up_key_down = false;
 	bool attack_key_down = false;
 	bool ex_key_down = false;
+
+	std::vector<Bullet*> bullets;//玩家发出的子弹
+	float radius_collision = 30;//与子弹碰撞检测半径
+
+	int blood=100;
+	int energy=0;
 };

@@ -5,6 +5,7 @@
 #include"Vector2.h"
 #include"bullet.h"
 #include"SunBullet.h"
+#include"SunBulletEx.h"
 #include<graphics.h>
 extern Atlas atlas_sunflower_run_right;
 extern Atlas atlas_sunflower_idle_right;
@@ -14,12 +15,12 @@ extern Atlas atlas_sunflower_run_left;
 extern Atlas atlas_sunflower_idle_left;
 extern Atlas atlas_sunflower_die_left;
 extern Atlas atlas_sunflower_attack_left;
-
+extern Atlas atlas_sun_text;
 class SunFlower : public Player
 {
 public:
 
-	SunFlower()
+	SunFlower(int id):Player(id)
 	{
 		this->run_speed = 0.35;
 		this->img_size.x = atlas_sunflower_idle_right.get_img_at(0)->getwidth();
@@ -47,12 +48,28 @@ public:
 		animation_player_die_right.set_loop(true);
 
 		animation_player_attack_left.set_atlas(&atlas_sunflower_attack_left);
-		animation_player_attack_left.set_interval(100);
+		animation_player_attack_left.set_interval(50);
 		animation_player_attack_left.set_loop(false);
+		animation_player_attack_left.set_callback([&]() {
+			if (state == playerState::attack)state = playerState::idle;
+			});
 		animation_player_attack_right.set_atlas(&atlas_sunflower_attack_right);
-		animation_player_attack_right.set_interval(100);
+		animation_player_attack_right.set_interval(50);
 		animation_player_attack_right.set_loop(false);
+		animation_player_attack_right.set_callback([&]() {
+			if (state == playerState::attack)state = playerState::idle;
+			});
 
+		animation_sun_text.set_atlas(&atlas_sun_text);
+		animation_sun_text.set_interval(50);
+		animation_sun_text.set_loop(false);
+
+		//普通攻击计时器初始化
+		timer_attack.set_one_shot(false);
+		timer_attack.set_wait_time(1000);//攻击间隔时间ms
+		timer_attack.set_callback([&]() {
+			can_attack = true;
+			});
 	}
 	~SunFlower()
 	{
@@ -62,7 +79,6 @@ public:
 	void on_input(const ExMessage& msg)
 	{
 		Player::on_input(msg);
-
 	}
 	void on_updata(int delta)
 	{
@@ -72,12 +88,12 @@ public:
 			if (right_key_down)
 			{
 				speed_vector.x = 0;
-				state = playerState::idle;
+				if(state!=playerState::attack)state = playerState::idle;
 			}
 			else
 			{
 				speed_vector.x = 0 - run_speed;
-				state = playerState::run;
+				if (state != playerState::attack)state = playerState::run;
 			}
 		}
 		else
@@ -85,20 +101,33 @@ public:
 			if (right_key_down)
 			{
 				speed_vector.x = run_speed;
-				state = playerState::run;
+				if (state != playerState::attack)state = playerState::run;
 			}
 			else
 			{
 				speed_vector.x = 0;
-				state = playerState::idle;
+				if (state != playerState::attack)state = playerState::idle;
 			}
 		}
 		//攻击状态
-		if (attack_key_down)
+		timer_attack.on_updata(delta);
+		if (attack_key_down&&can_attack)
 		{
-			std::cout << "DOWN" << std::endl;
 			bullets.push_back(new SunBullet(pos_player.x, pos_player.y, facing_right));
 			attack_key_down = false;
+			can_attack = false;
+			timer_attack.restart();
+		}
+		
+		//技能
+		if (ex_key_down)
+		{
+			bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
+			ex_key_down = false;
+			state = playerState::attack;
+			animation_player_attack_left.reset();
+			animation_player_attack_right.reset();
+			animation_sun_text.reset();
 		}
 		if (facing_right)
 		{
@@ -114,7 +143,8 @@ public:
 				animation_player_die_right.on_updata(delta);
 				break;
 			case Player::playerState::attack:
-				//待加入
+				animation_player_attack_right.on_updata(delta);
+				animation_sun_text.on_updata(delta);
 				break;
 			default:
 				break;
@@ -134,7 +164,8 @@ public:
 				animation_player_die_left.on_updata(delta);
 				break;
 			case Player::playerState::attack:
-				//待加入
+				animation_player_attack_left.on_updata(delta);
+				animation_sun_text.on_updata(delta);
 				break;
 			default:
 				break;
@@ -153,23 +184,30 @@ public:
 		{
 			bullets[i]->on_updata(delta);
 		}
+		updata_bullet_list();
 	}
 	void on_draw(Camera &camera)
 	{
 		Player::on_draw(camera);
+		if (state == playerState::attack)animation_sun_text.on_draw(pos_player.x-50,pos_player.y-50);
+	}
+	void bullet_draw(Camera& camera)
+	{
 		for (size_t i = 0; i < bullets.size(); i++)
 		{
 			bullets[i]->on_draw(camera);
 		}
 	}
-	void on_exit()
+	void on_exit()//处理内存
 	{
 		for (size_t i = 0; i < bullets.size(); i++)
 		{
 			delete bullets[i];
 		}
 	}
-private:
-	std::vector<Bullet*> bullets;
 
+private:
+	Animation animation_sun_text;
+	Timer timer_attack;//普通攻击间隔计时器
+	bool can_attack=true;//能进行攻击标志
 };

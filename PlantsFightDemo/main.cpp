@@ -8,6 +8,8 @@
 #include"Camera.h"
 #include"Platform.h"
 #include"Player.h"
+#include"bullet.h"
+#include<vector>
 #include<Windows.h>
 #include<mciapi.h>
 //#include<f>
@@ -63,10 +65,18 @@ IMAGE img_hills;
 IMAGE img_sky;
 IMAGE img_platform_large;
 IMAGE img_platform_small;
+IMAGE img_cursor_1P;
+IMAGE img_cursor_2P;
+
+Atlas atlas_sun_text;
 //◊”µØ
 Atlas atlas_sunflower_bullet;
 Atlas atlas_sunflower_bullet_ex;
+Atlas atlas_sunflower_bullet_explode;
+Atlas atlas_sunflower_bullet_ex_explode;
 
+Atlas atlas_peashooter_bullet;
+Atlas atlas_peashooter_bullet_explode;
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -117,6 +127,9 @@ void load_game_resources()
 	loadimage(&img_platform_large, L"resources/platform_large.png");
 	loadimage(&img_platform_small, L"resources/platform_small.png");
 
+	loadimage(&img_cursor_1P, L"resources/1P_cursor.png");
+	loadimage(&img_cursor_2P, L"resources/2P_cursor.png");
+
 	atlas_sunflower_idle_right.load_from_file(L"resources/sunflower_idle_%d.png", 8);
 	atlas_sunflower_die_right.load_from_file(L"resources/sunflower_die_%d.png", 2);
 	atlas_sunflower_run_right.load_from_file(L"resources/sunflower_run_%d.png", 5);
@@ -137,6 +150,13 @@ void load_game_resources()
 
 	atlas_sunflower_bullet.load_from_file(L"resources/sun_%d.png", 5);
 	atlas_sunflower_bullet_ex.load_from_file(L"resources/sun_ex_%d.png", 5);
+	atlas_sunflower_bullet_explode.load_from_file(L"resources/sun_explode_%d.png", 5);
+	atlas_sunflower_bullet_ex_explode.load_from_file(L"resources/sun_ex_explode_%d.png", 5);
+
+	atlas_peashooter_bullet.load_from_file(L"resources/pea%d.png",1);
+	atlas_peashooter_bullet_explode.load_from_file(L"resources/pea_break_%d.png", 3);
+
+	atlas_sun_text.load_from_file(L"resources/sun_text_%d.png", 6);
 	//“Ù¿÷
 	mciSendString(_T("open resources/bgm_menu.mp3 alias bgm_menu"), NULL, 0, NULL);
 	mciSendString(_T("open resources/bgm_game.mp3 alias bgm_game"), NULL, 0, NULL);
