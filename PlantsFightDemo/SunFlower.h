@@ -22,6 +22,7 @@ public:
 
 	SunFlower(int id):Player(id)
 	{
+		this->player_character = playerCharacter::sunflower;
 		this->run_speed = 0.35;
 		this->img_size.x = atlas_sunflower_idle_right.get_img_at(0)->getwidth();
 		this->img_size.y = atlas_sunflower_idle_right.get_img_at(0)->getheight();
@@ -41,11 +42,17 @@ public:
 		animation_player_run_right.set_loop(true);
 
 		animation_player_die_left.set_atlas(&atlas_sunflower_die_left);
-		animation_player_die_left.set_interval(100);
-		animation_player_die_left.set_loop(true);
+		animation_player_die_left.set_interval(1000);
+		animation_player_die_left.set_loop(false);
+		animation_player_die_left.set_callback([&]() {
+			call_back();
+			});
 		animation_player_die_right.set_atlas(&atlas_sunflower_die_right);
-		animation_player_die_right.set_interval(100);
-		animation_player_die_right.set_loop(true);
+		animation_player_die_right.set_interval(1000);
+		animation_player_die_right.set_loop(false);
+		animation_player_die_right.set_callback([&]() {
+			call_back();
+			});
 
 		animation_player_attack_left.set_atlas(&atlas_sunflower_attack_left);
 		animation_player_attack_left.set_interval(50);
@@ -66,7 +73,7 @@ public:
 
 		//普通攻击计时器初始化
 		timer_attack.set_one_shot(false);
-		timer_attack.set_wait_time(1000);//攻击间隔时间ms
+		timer_attack.set_wait_time(500);//攻击间隔时间ms
 		timer_attack.set_callback([&]() {
 			can_attack = true;
 			});
@@ -82,6 +89,13 @@ public:
 	}
 	void on_updata(int delta)
 	{
+		if (blood <= 0)
+		{
+			state = playerState::die;
+			animation_player_die_left.on_updata(delta);
+			animation_player_die_right.on_updata(delta);
+			return;
+		}
 		//Player::on_updata(delta);
 		if (left_key_down)
 		{
@@ -120,8 +134,9 @@ public:
 		}
 		
 		//技能
-		if (ex_key_down)
+		if (ex_key_down&&energy==100)
 		{
+			energy = 0;
 			bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
 			ex_key_down = false;
 			state = playerState::attack;

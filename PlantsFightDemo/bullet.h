@@ -69,6 +69,14 @@ public:
 	{
 		return energy;
 	}
+	bool get_is_culculated()
+	{
+		return culculated;
+	}
+	void set_is_culculated(bool b)
+	{
+		culculated = b;
+	}
 protected:
 	Animation animation_bullet; //子弹的正常状态图
 	Animation animation_bullet_explode;//子弹接触敌人后爆炸动画
@@ -80,6 +88,7 @@ protected:
 	Vector2 speed = { 0,0 };//子弹在各方向上的速度
 	int damage = 10;//子弹伤害
 	int energy = 10;//子弹命中回复能量值
+	bool culculated = false;//子弹命中后是否计算能量增加
 	bool is_collision = false; //子弹是否与玩家发生碰撞
 	bool is_exploded_over = false; //子弹爆炸动画是否结束
 	bool is_out_window = false;//子弹是否掉入窗口外

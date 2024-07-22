@@ -8,6 +8,9 @@ class PeaBullet:public Bullet
 public:
 	PeaBullet(int x,int y,bool facing_right):Bullet()
 	{
+		//子弹伤害和回蓝量设置
+		damage = 1;
+		energy = 5;
 		//子弹图片设置
 		img_explode_size = { atlas_peashooter_bullet_explode.get_img_at(0)->getwidth(),atlas_peashooter_bullet_explode.get_img_at(0)->getheight() };
 		img_size = { atlas_peashooter_bullet.get_img_at(0)->getwidth(),atlas_peashooter_bullet.get_img_at(0)->getheight() };

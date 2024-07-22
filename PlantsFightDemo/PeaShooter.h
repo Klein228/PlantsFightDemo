@@ -16,6 +16,7 @@ class PeaShooter:public Player
 public:
 	PeaShooter(int id):Player(id)
 	{
+		this->player_character = playerCharacter::peashoooter;
 		this->run_speed = 0.35;
 		this->img_size.x = atlas_peashooter_idle_right.get_img_at(0)->getwidth();
 		this->img_size.y = atlas_peashooter_idle_right.get_img_at(0)->getheight();
@@ -34,11 +35,18 @@ public:
 		animation_player_run_right.set_loop(true);
 
 		animation_player_die_left.set_atlas(&atlas_peashooter_die_left);
-		animation_player_die_left.set_interval(100);
-		animation_player_die_left.set_loop(true);
+		animation_player_die_left.set_interval(1000);
+		animation_player_die_left.set_loop(false);
+		animation_player_die_left.set_callback([&]() {
+			call_back();
+			});
 		animation_player_die_right.set_atlas(&atlas_peashooter_die_right);
-		animation_player_die_right.set_interval(100);
-		animation_player_die_right.set_loop(true);
+		animation_player_die_right.set_interval(1000);
+		animation_player_die_right.set_loop(false);
+		animation_player_die_right.set_callback([&]() {
+			call_back();
+			});
+
 
 		animation_player_attack_left.set_atlas(&atlas_peashooter_attack_left);
 		animation_player_attack_left.set_interval(10);
@@ -63,7 +71,7 @@ public:
 		timer_ex_skill.pause();
 		timer_ex_peashot.pause();
 		timer_interval_attack.set_one_shot(false);
-		timer_interval_attack.set_wait_time(500);
+		timer_interval_attack.set_wait_time(200);
 		timer_interval_attack.set_callback([&]() {
 			can_attack = true;
 			});
@@ -78,52 +86,56 @@ public:
 	}
 	void on_updata(int delta)
 	{
-		timer_interval_attack.on_updata(delta);
+		if (blood <= 0)
+		{
+			state = playerState::die;
+			animation_player_die_left.on_updata(delta);
+			animation_player_die_right.on_updata(delta);
+			return;
+		}
+		timer_interval_attack.on_updata(delta);//¹¥»÷¼ä¸ô¸üÐÂ
 		
-		
-			if (left_key_down)
+		if (left_key_down)
+		{
+			if (right_key_down)
 			{
-				if (right_key_down)
-				{
-					speed_vector.x = 0;
-					if (state != playerState::attack)state = playerState::idle;
-				}
-				else
-				{
-					speed_vector.x = 0 - run_speed;
-					if (state != playerState::attack)state = playerState::run;
-				}
+				speed_vector.x = 0;
+				if (state != playerState::attack)state = playerState::idle;
 			}
 			else
 			{
-				if (right_key_down)
-				{
-					speed_vector.x = run_speed;
-					if (state != playerState::attack)state = playerState::run;
-				}
-				else
-				{
-					speed_vector.x = 0;
-					if (state != playerState::attack)state = playerState::idle;
-				}
+				speed_vector.x = 0 - run_speed;
+				if (state != playerState::attack)state = playerState::run;
 			}
-			//¹¥»÷×´Ì¬
-			if (attack_key_down&&can_attack)
+		}
+		else
+		{
+			if (right_key_down)
 			{
-				can_attack = false;
-				bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
-				attack_key_down = false;
-				timer_interval_attack.restart();
+				speed_vector.x = run_speed;
+				if (state != playerState::attack)state = playerState::run;
 			}
-		
+			else
+			{
+				speed_vector.x = 0;
+				if (state != playerState::attack)state = playerState::idle;
+			}
+		}
+		//¹¥»÷×´Ì¬
+		if (attack_key_down&&can_attack)
+		{
+			can_attack = false;
+			bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
+			attack_key_down = false;
+			timer_interval_attack.restart();
+		}
 		timer_ex_peashot.on_updata(delta);
 		timer_ex_skill.on_updata(delta);
-		
-
 		//¼¼ÄÜ
-		if (ex_key_down&&state!=playerState::attack)
+		if (ex_key_down&&state!=playerState::attack&&energy==100)
 		{
 			ex_key_down = false;
+			energy = 0;
 			state = playerState::attack;
 			timer_ex_peashot.resume();
 			timer_ex_skill.resume();	

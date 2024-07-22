@@ -8,6 +8,9 @@ class SunBulletEx:public Bullet
 public:
 	SunBulletEx(int x,int y):Bullet()
 	{
+		//子弹伤害和回蓝量设置
+		damage = 20;
+		energy = 50;
 		//设置子弹大小
 		img_explode_size = { atlas_sunflower_bullet_ex_explode.get_img_at(0)->getwidth(),atlas_sunflower_bullet_ex_explode.get_img_at(0)->getwidth() };
 		img_size = { atlas_sunflower_bullet_ex.get_img_at(0)->getwidth(),atlas_sunflower_bullet_ex.get_img_at(0)->getheight() };

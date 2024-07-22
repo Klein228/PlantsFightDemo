@@ -67,7 +67,11 @@ IMAGE img_platform_large;
 IMAGE img_platform_small;
 IMAGE img_cursor_1P;
 IMAGE img_cursor_2P;
-
+IMAGE img_sunflower_head;
+IMAGE img_peashooter_head;
+IMAGE img_1P_winner;
+IMAGE img_2P_winner;
+IMAGE img_winner_bar;
 Atlas atlas_sun_text;
 //×Óµ¯
 Atlas atlas_sunflower_bullet;
@@ -129,6 +133,12 @@ void load_game_resources()
 
 	loadimage(&img_cursor_1P, L"resources/1P_cursor.png");
 	loadimage(&img_cursor_2P, L"resources/2P_cursor.png");
+
+	loadimage(&img_sunflower_head, L"resources/avatar_sunflower.png");
+	loadimage(&img_peashooter_head, L"resources/avatar_peashooter.png");
+	loadimage(&img_1P_winner, L"resources/1P_winner.png");
+	loadimage(&img_2P_winner, L"resources/2P_winner.png");
+	loadimage(&img_winner_bar, L"resources/winnner_bar.png");
 
 	atlas_sunflower_idle_right.load_from_file(L"resources/sunflower_idle_%d.png", 8);
 	atlas_sunflower_die_right.load_from_file(L"resources/sunflower_die_%d.png", 2);

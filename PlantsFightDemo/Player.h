@@ -16,6 +16,11 @@ public:
 		die,
 		attack
 	};
+	enum class playerCharacter
+	{
+		sunflower,
+		peashoooter
+	};
 public:
 	Player(int id)
 	{
@@ -42,11 +47,11 @@ public:
 					break;
 				case 'A':
 					left_key_down = true;
-					facing_right = false;
+					if(state!=playerState::die)facing_right = false;
 					break;
 				case 'D':
 					right_key_down = true;
-					facing_right = true;
+					if (state != playerState::die)facing_right = true;
 					break;
 				case 'F':
 					attack_key_down = true;
@@ -66,11 +71,11 @@ public:
 					break;
 				case VK_LEFT:
 					left_key_down = true;
-					facing_right = false;
+					if (state != playerState::die)facing_right = false;
 					break;
 				case VK_RIGHT:
 					right_key_down = true;
-					facing_right = true;
+					if (state != playerState::die)facing_right = true;
 					break;
 					//">"
 				case 190:
@@ -315,6 +320,7 @@ public:
 	{
 		for (size_t i = 0; i < blts->size(); i++)
 		{
+			if (blts->at(i)->get_is_collision())continue;
 			Vector2 pos = blts->at(i)->get_center_pos();
 			float r = blts->at(i)->get_radius_collission();
 			Vector2 pos_p = get_pos_center();
@@ -342,15 +348,16 @@ public:
 	{
 		return { pos_player.x + img_size.x / 2,pos_player.y + img_size.y / 2 };
 	}
-	void updata_bullet_list()//更新子弹列表
+	void updata_bullet_list()//遍历更新子弹列表
 	{
 		int i = 0;
 		int j = bullets.size() - 1;
 		while (i<=j)
 		{
-			if (bullets[i]->get_is_collision())
+			if (bullets[i]->get_is_collision()&&!bullets[i]->get_is_culculated())
 			{
 				energy = (energy + bullets[i]->get_energy() > 100) ? 100 : energy + bullets[i]->get_energy();
+				bullets[i]->set_is_culculated(true);
 			}
 			if (bullets[i]->get_is_out_window() || bullets[i]->get_is_exploded_over())
 			{
@@ -386,6 +393,14 @@ public:
 	{
 		energy = e;
 	}
+	playerCharacter get_player_type()
+	{
+		return player_character;
+	}
+	void set_call_back(std::function<void()> fun)
+	{
+		this->call_back = fun;
+	}
 protected:
 	int id=1;//玩家id
 	Vector2 speed_vector = { 0.0,0.0 };//速度
@@ -412,10 +427,11 @@ protected:
 	bool up_key_down = false;
 	bool attack_key_down = false;
 	bool ex_key_down = false;
-
+	playerCharacter player_character;//玩家类型
 	std::vector<Bullet*> bullets;//玩家发出的子弹
 	float radius_collision = 30;//与子弹碰撞检测半径
 
 	int blood=100;
 	int energy=0;
+	std::function<void()> call_back;//玩家死亡调用
 };
