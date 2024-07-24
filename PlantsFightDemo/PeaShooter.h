@@ -199,20 +199,7 @@ public:
 	{
 		Player::on_draw(camera);
 	}
-	void bullet_draw(Camera& camera)//由于玩家渲染必须放在子弹渲染之前,故分离出两个玩家子弹的渲染过程
-	{
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			bullets[i]->on_draw(camera);
-		}
-	}
-	void on_exit()//处理内存
-	{
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			delete bullets[i];
-		}
-	}
+
 private:
 	Timer timer_ex_skill;//技能持续时长计时器
 	Timer timer_ex_peashot;//技能子弹循环产生计时器

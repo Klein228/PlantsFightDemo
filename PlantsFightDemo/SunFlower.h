@@ -77,6 +77,12 @@ public:
 		timer_attack.set_callback([&]() {
 			can_attack = true;
 			});
+		//粒子计时器初始化
+		timer_run_effect.set_one_shot(false);
+		timer_run_effect.set_wait_time(200);//粒子产生间隔时间
+		timer_run_effect.set_callback([&]() {
+			can_generate_run_effect = true;
+			});
 	}
 	~SunFlower()
 	{
@@ -107,7 +113,15 @@ public:
 			else
 			{
 				speed_vector.x = 0 - run_speed;
-				if (state != playerState::attack)state = playerState::run;
+				if (state != playerState::attack)
+				{
+					state = playerState::run;
+					if (is_collision && can_generate_run_effect) {
+						list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
+						can_generate_run_effect = false;
+						timer_run_effect.restart();
+					}
+				}
 			}
 		}
 		else
@@ -116,6 +130,11 @@ public:
 			{
 				speed_vector.x = run_speed;
 				if (state != playerState::attack)state = playerState::run;
+				if (is_collision && can_generate_run_effect) {
+					list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
+					can_generate_run_effect = false;
+					timer_run_effect.restart();
+				}
 			}
 			else
 			{
@@ -193,6 +212,7 @@ public:
 		{
 			speed_vector.y = 0 - jump_speed;
 			up_key_down = false;
+			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
 		}
 
 		for (size_t i = 0; i < bullets.size(); i++)
@@ -200,29 +220,27 @@ public:
 			bullets[i]->on_updata(delta);
 		}
 		updata_bullet_list();
+		//粒子状态更新
+		for (size_t i = 0; i < list_particle_effects.size(); i++)
+		{
+			list_particle_effects[i]->on_updata(delta);
+		}
+		updata_particle_list();
+		timer_run_effect.on_updata(delta);
 	}
 	void on_draw(Camera &camera)
 	{
 		Player::on_draw(camera);
 		if (state == playerState::attack)animation_sun_text.on_draw(pos_player.x-50,pos_player.y-50);
 	}
-	void bullet_draw(Camera& camera)
-	{
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			bullets[i]->on_draw(camera);
-		}
-	}
-	void on_exit()//处理内存
-	{
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			delete bullets[i];
-		}
-	}
+
 
 private:
+
 	Animation animation_sun_text;
+	Timer timer_run_effect;//跑动粒子产生计时器
+	bool can_generate_run_effect = true;
+
 	Timer timer_attack;//普通攻击间隔计时器
 	bool can_attack=true;//能进行攻击标志
 };

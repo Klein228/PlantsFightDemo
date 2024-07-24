@@ -5,6 +5,9 @@
 #include"Animation.h"
 #include"Platform.h"
 #include"bullet.h"
+#include"Particle.h"
+#include"RunParticle.h"
+#include"JumpParticle.h"
 extern std::vector<Platform> list_platform;
 class Player
 {
@@ -27,7 +30,10 @@ public:
 		set_id(id);
 		init_pos();
 	}
-	~Player(){}
+	~Player()
+	{
+		on_exit();
+	}
 	virtual void set_id(int id)
 	{
 		this->id = id;
@@ -227,6 +233,10 @@ public:
 	};
 	virtual void on_draw(Camera& camera) 
 	{
+		for (size_t i = 0; i < list_particle_effects.size(); i++)
+		{
+			list_particle_effects[i]->on_draw(camera);
+		}
 		if (is_debug)
 		{
 			circle(get_pos_center().x, get_pos_center().y, radius_collision);
@@ -271,10 +281,14 @@ public:
 				break;
 			}
 		}
+		
 	};
-	virtual void bullet_draw(Camera& camera)
+	virtual void bullet_draw(Camera& camera)//由于玩家渲染必须放在子弹渲染之前,故分离出两个玩家子弹的渲染过程
 	{
-
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			bullets[i]->on_draw(camera);
+		}
 	}
 	virtual void move_collision(int delta)
 	{
@@ -336,6 +350,17 @@ public:
 			}
 		}
 	}
+	void on_exit()//处理内存
+	{
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			delete bullets[i];
+		}
+		for (size_t i = 0; i < list_particle_effects.size(); i++)
+		{
+			delete list_particle_effects[i];
+		}
+	}
 	void set_radius_collision(float f)
 	{
 		radius_collision = f;
@@ -365,6 +390,26 @@ public:
 				bullets[i] = bullets[j];
 				delete temp;
 				bullets.pop_back();
+				j--;
+			}
+			else
+			{
+				i++;
+			}
+		}
+	}
+	void updata_particle_list()//遍历更新粒子列表
+	{
+		int i = 0;
+		int j = list_particle_effects.size() - 1;
+		while (i <= j)
+		{
+			if (list_particle_effects[i]->check_is_over())
+			{
+				auto temp = list_particle_effects[i];
+				list_particle_effects[i] = list_particle_effects[j];
+				delete temp;
+				list_particle_effects.pop_back();
 				j--;
 			}
 			else
@@ -434,4 +479,5 @@ protected:
 	int blood=100;
 	int energy=0;
 	std::function<void()> call_back;//玩家死亡调用
+	std::vector<Particle*> list_particle_effects;//粒子列表
 };

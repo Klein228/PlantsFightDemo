@@ -22,6 +22,9 @@
     <Filter Include="头文件\bullet">
       <UniqueIdentifier>{3318f59a-4663-4f57-8908-84df9e86eb21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\particle">
+      <UniqueIdentifier>{8379fa53-13d6-48ef-8846-a10f9d5c37ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -88,6 +91,15 @@
     </ClInclude>
     <ClInclude Include="PeaBullet.h">
       <Filter>头文件\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>头文件\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="RunParticle.h">
+      <Filter>头文件\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="JumpParticle.h">
+      <Filter>头文件\particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

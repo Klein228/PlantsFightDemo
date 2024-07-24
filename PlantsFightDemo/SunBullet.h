@@ -87,8 +87,8 @@ public:
 	}
 
 private:
-	float gravity_sunbullet = 7e-4;//太阳花普通子弹所受重力方向速度变化大小
-	float speed_x = 0.5;//太阳花普通子弹的初始x速度
-	float speed_y = -0.3;//太阳花普通子弹的初始y速度
+	float gravity_sunbullet = 8e-4;//太阳花普通子弹所受重力方向速度变化大小
+	float speed_x = 0.4;//太阳花普通子弹的初始x速度
+	float speed_y = -0.4;//太阳花普通子弹的初始y速度
 };
 

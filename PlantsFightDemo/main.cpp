@@ -81,6 +81,9 @@ Atlas atlas_sunflower_bullet_ex_explode;
 
 Atlas atlas_peashooter_bullet;
 Atlas atlas_peashooter_bullet_explode;
+//¡£◊”œµÕ≥
+Atlas atlas_run_effect;
+Atlas atlas_jump_effect;
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -167,6 +170,9 @@ void load_game_resources()
 	atlas_peashooter_bullet_explode.load_from_file(L"resources/pea_break_%d.png", 3);
 
 	atlas_sun_text.load_from_file(L"resources/sun_text_%d.png", 6);
+
+	atlas_run_effect.load_from_file(L"resources/run_effect_%d.png", 4);
+	atlas_jump_effect.load_from_file(L"resources/jump_effect_%d.png", 5);
 	//“Ù¿÷
 	mciSendString(_T("open resources/bgm_menu.mp3 alias bgm_menu"), NULL, 0, NULL);
 	mciSendString(_T("open resources/bgm_game.mp3 alias bgm_game"), NULL, 0, NULL);
