@@ -7,6 +7,7 @@ class Atlas
 public:
 	Atlas() {}
 	~Atlas() {}
+	
 	void load_from_file(LPCTSTR filepath, int num)
 	{
 		img_list.clear();

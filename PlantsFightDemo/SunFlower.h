@@ -7,6 +7,7 @@
 #include"SunBullet.h"
 #include"SunBulletEx.h"
 #include<graphics.h>
+extern Camera main_camera;
 extern Atlas atlas_sunflower_run_right;
 extern Atlas atlas_sunflower_idle_right;
 extern Atlas atlas_sunflower_die_right;
@@ -95,6 +96,7 @@ public:
 	}
 	void on_updata(int delta)
 	{
+		//ËÀÍö×´Ì¬¼ì²â
 		if (blood <= 0)
 		{
 			state = playerState::die;
@@ -102,7 +104,7 @@ public:
 			animation_player_die_right.on_updata(delta);
 			return;
 		}
-		//Player::on_updata(delta);
+		//ÒÆ¶¯×´Ì¬¼ì²â
 		if (left_key_down)
 		{
 			if (right_key_down)
@@ -142,19 +144,42 @@ public:
 				if (state != playerState::attack)state = playerState::idle;
 			}
 		}
+		//Åö×²¼ì²â
+		move_collision(delta);
+		//ÌøÔ¾°´¼ü´¦Àí
+		if (up_key_down)
+		{
+			speed_vector.y = 0 - jump_speed;
+			up_key_down = false;
+			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
+		}
+		//×Óµ¯ÁÐ±í´¦Àí
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			bullets[i]->on_updata(delta);
+		}
+		updata_bullet_list();
+		//Á£×Ó×´Ì¬¸üÐÂ
+		for (size_t i = 0; i < list_particle_effects.size(); i++)
+		{
+			list_particle_effects[i]->on_updata(delta);
+		}
+		updata_particle_list();
+		timer_run_effect.on_updata(delta);
 		//¹¥»÷×´Ì¬
 		timer_attack.on_updata(delta);
-		if (attack_key_down&&can_attack)
+		if (attack_key_down && can_attack)
 		{
 			bullets.push_back(new SunBullet(pos_player.x, pos_player.y, facing_right));
 			attack_key_down = false;
 			can_attack = false;
 			timer_attack.restart();
 		}
-		
 		//¼¼ÄÜ
-		if (ex_key_down&&energy==100)
+		if (ex_key_down && energy == 100)
 		{
+			main_camera.shake(20, 200);
+			mciSendString(L"play sun_text from 0", NULL, 0, NULL);
 			energy = 0;
 			bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
 			ex_key_down = false;
@@ -163,6 +188,7 @@ public:
 			animation_player_attack_right.reset();
 			animation_sun_text.reset();
 		}
+		//×´Ì¬¶¯»­¸üÐÂ
 		if (facing_right)
 		{
 			switch (state)
@@ -206,27 +232,6 @@ public:
 			}
 		}
 
-		//Åö×²¼ì²â ÌøÔ¾
-		move_collision(delta);
-		if (up_key_down)
-		{
-			speed_vector.y = 0 - jump_speed;
-			up_key_down = false;
-			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-		}
-
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			bullets[i]->on_updata(delta);
-		}
-		updata_bullet_list();
-		//Á£×Ó×´Ì¬¸üÐÂ
-		for (size_t i = 0; i < list_particle_effects.size(); i++)
-		{
-			list_particle_effects[i]->on_updata(delta);
-		}
-		updata_particle_list();
-		timer_run_effect.on_updata(delta);
 	}
 	void on_draw(Camera &camera)
 	{

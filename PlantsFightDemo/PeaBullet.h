@@ -8,6 +8,7 @@ class PeaBullet:public Bullet
 public:
 	PeaBullet(int x,int y,bool facing_right):Bullet()
 	{
+		bullet_type = peabullet;
 		//子弹伤害和回蓝量设置
 		damage = 1;
 		energy = 5;

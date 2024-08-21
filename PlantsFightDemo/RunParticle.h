@@ -7,6 +7,7 @@ class RunParticle:public Particle
 public:
 	RunParticle(int center_x,int center_y,int half_height)
 	{
+		mciSendString(L"play run from 0", NULL, 0, NULL);
 		size_run_effect.x = atlas_run_effect.get_img_at(0)->getwidth();
 		size_run_effect.y = atlas_run_effect.get_img_at(0)->getheight();
 		pos_run_effect.x = center_x-size_run_effect.x/2;

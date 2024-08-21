@@ -3,6 +3,7 @@
 class Vector2
 {
 public:
+	Vector2()=default;
 	Vector2(float x,float y)
 	{
 		this->x = x;

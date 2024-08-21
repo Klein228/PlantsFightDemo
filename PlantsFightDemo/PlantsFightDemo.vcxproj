@@ -142,6 +142,8 @@
     <ClInclude Include="PeaShooter.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Prop.h" />
+    <ClInclude Include="PropManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RunParticle.h" />
     <ClInclude Include="Scene.h" />

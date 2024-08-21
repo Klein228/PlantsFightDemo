@@ -4,6 +4,7 @@
 #include"GameScene.h"
 #include"PeaShooter.h"
 #include"SunFlower.h"
+extern bool is_exit;
 extern SceneManager scene_manager;
 extern const POINT window_size;
 extern IMAGE img_select_scene_background;
@@ -174,6 +175,11 @@ public:
 			//"Enter"
 			case 13:
 				scene_manager.switch_to(SceneManager::sceneType::Game);
+				break;
+			case VK_ESCAPE:
+				this->on_exit();
+				is_exit = true;
+				break;
 			default:
 				break;
 			}

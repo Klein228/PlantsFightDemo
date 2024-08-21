@@ -8,6 +8,7 @@
 #include"Particle.h"
 #include"RunParticle.h"
 #include"JumpParticle.h"
+extern Camera main_camera;
 extern std::vector<Platform> list_platform;
 class Player
 {
@@ -343,9 +344,27 @@ public:
 
 			if (distance <= r + r_p)
 			{
+				//²¥·Å×Óµ¯±¬Õ¨ÒôÐ§ 
+				if (!blts->at(i)->get_is_collision())
+				{
+					switch (blts->at(i)->bullet_type)
+					{
+					case Bullet::peabullet:
+						mciSendString(L"play pea_break_1 from 0", NULL, 0, NULL);
+						break;
+					case Bullet::sunbullet:
+						mciSendString(L"play sun_explode from 0", NULL, 0, NULL);
+						break;
+					case Bullet::sunbulletex:
+						mciSendString(L"play sun_explode_ex from 0", NULL, 0, NULL);
+						break;
+					default:
+						break;
+					}
+				}
+
 				blts->at(i)->set_is_collision(true);
 				blood = (blood - blts->at(i)->get_bullet_damage() > 0) ? blood - blts->at(i)->get_bullet_damage() : 0;
-				
 				//player hurt()
 			}
 		}
@@ -382,6 +401,7 @@ public:
 			if (bullets[i]->get_is_collision()&&!bullets[i]->get_is_culculated())
 			{
 				energy = (energy + bullets[i]->get_energy() > 100) ? 100 : energy + bullets[i]->get_energy();
+				if (bullets[i]->bullet_type == Bullet::sunbullet)main_camera.shake(10, 100);
 				bullets[i]->set_is_culculated(true);
 			}
 			if (bullets[i]->get_is_out_window() || bullets[i]->get_is_exploded_over())
@@ -428,7 +448,7 @@ public:
 	}
 	void set_blood(int b)
 	{
-		blood = b;
+		blood = b>100?100:b;
 	}
 	int get_energy()
 	{

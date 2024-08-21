@@ -6,6 +6,14 @@ class Bullet
 {
 
 public:
+	enum bulletType
+	{
+		peabullet,
+		sunbullet,
+		sunbulletex,
+		nobullet
+	}bullet_type;
+public:
 	Bullet() {};
 	~Bullet() {};
 	virtual void on_updata(int delta)

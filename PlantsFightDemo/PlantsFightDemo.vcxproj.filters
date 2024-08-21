@@ -25,6 +25,9 @@
     <Filter Include="头文件\particle">
       <UniqueIdentifier>{8379fa53-13d6-48ef-8846-a10f9d5c37ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\props">
+      <UniqueIdentifier>{02467d77-a96a-4913-b126-ba178ae1177f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -100,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="JumpParticle.h">
       <Filter>头文件\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Prop.h">
+      <Filter>头文件\props</Filter>
+    </ClInclude>
+    <ClInclude Include="PropManager.h">
+      <Filter>头文件\props</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

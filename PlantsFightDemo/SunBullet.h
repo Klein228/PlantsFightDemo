@@ -8,6 +8,7 @@ class SunBullet:public Bullet
 public:
 	SunBullet(int x,int y,bool facing_right):Bullet()
 	{
+		bullet_type = sunbullet;
 		//子弹伤害和回蓝量设置
 		damage = 5;
 		energy = 20;

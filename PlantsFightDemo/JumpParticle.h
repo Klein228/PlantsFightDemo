@@ -7,6 +7,7 @@ class JumpParticle :public Particle
 public:
 	JumpParticle(int center_x, int center_y, int half_height)
 	{
+		mciSendString(L"play jump from 0", NULL, 0, NULL);
 		size_jump_effect.x = atlas_jump_effect.get_img_at(0)->getwidth();
 		size_jump_effect.y = atlas_jump_effect.get_img_at(0)->getheight();
 		pos_jump_effect.x = center_x - size_jump_effect.x / 2;

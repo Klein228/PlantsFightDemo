@@ -8,6 +8,7 @@ class SunBulletEx:public Bullet
 public:
 	SunBulletEx(int x,int y):Bullet()
 	{
+		bullet_type = sunbulletex;
 		//子弹伤害和回蓝量设置
 		damage = 20;
 		energy = 50;

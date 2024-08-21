@@ -16,6 +16,7 @@
 #pragma comment(lib,"Winmm.lib")
 
 bool is_debug = false;//debug模式
+bool is_exit = false;//退出游戏
 //设置窗口大小
 const POINT window_size = {1280,720};
 //主菜单场景资源加载
@@ -84,6 +85,8 @@ Atlas atlas_peashooter_bullet_explode;
 //粒子系统
 Atlas atlas_run_effect;
 Atlas atlas_jump_effect;
+//道具资源
+IMAGE img_prop;
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -143,6 +146,8 @@ void load_game_resources()
 	loadimage(&img_2P_winner, L"resources/2P_winner.png");
 	loadimage(&img_winner_bar, L"resources/winnner_bar.png");
 
+	loadimage(&img_prop, L"resources/Chest.png",80,60);
+
 	atlas_sunflower_idle_right.load_from_file(L"resources/sunflower_idle_%d.png", 8);
 	atlas_sunflower_die_right.load_from_file(L"resources/sunflower_die_%d.png", 2);
 	atlas_sunflower_run_right.load_from_file(L"resources/sunflower_run_%d.png", 5);
@@ -189,6 +194,9 @@ void load_game_resources()
 	mciSendString(_T("open resources/ui_switch.wav alias ui_switch"), NULL, 0, NULL);
 	mciSendString(_T("open resources/ui_win.wav alias ui_win"), NULL, 0, NULL);
 	mciSendString(_T("open resources/impact_btn.wav alias btn"), NULL, 0, NULL);
+	mciSendString(_T("open resources/Jump_03.mp3 alias jump"), NULL, 0, NULL);
+	mciSendString(_T("open resources/run.wav alias run"), NULL, 0, NULL);
+
 }
 int main()
 {
@@ -208,7 +216,7 @@ int main()
 	scene_manager.set_current_scene(menu_scene);
 
 	BeginBatchDraw();
-	while (true)
+	while (!is_exit)
 	{
 		DWORD frame_begin_time = GetTickCount();
 

@@ -2,6 +2,8 @@
 #include"Atlas.h"
 #include"utils.h"
 #include"functional"
+#include"Camera.h"
+extern Camera main_camera;
 class Animation
 {
 public:
@@ -58,9 +60,9 @@ public:
 			}
 		}
 	}
-	void on_draw(int x,int y)const
+	void on_draw(int x, int y)const
 	{
-		putimage_alpha(x, y, atlas->get_img_at(idx_frame));
+		putimage_alpha(x, y, atlas->get_img_at(idx_frame),&main_camera);
 	}
 	void set_callback(std::function<void()> callback)
 	{
