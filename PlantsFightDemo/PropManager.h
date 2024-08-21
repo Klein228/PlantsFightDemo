@@ -1,5 +1,7 @@
 #pragma once
 #include"Prop.h"
+#include"BloodProp.h"
+#include"EnergyProp.h"
 #include<vector>
 extern IMAGE img_prop;
 class PropManager
@@ -21,7 +23,9 @@ public:
 		//随机生成位置
 		int rand_x = rand() % (getwidth()-img_prop.getwidth());
 		int rand_y = 0-img_prop.getheight();
-		Prop* new_prop = new Prop(rand_x,rand_y,player1,player2);
+		Prop* new_prop;
+		if (rand_x % 2 == 0)new_prop = new BloodProp(rand_x, rand_y, player1, player2);
+		else new_prop = new EnergyProp(rand_x, rand_y, player1, player2);
 		prop_list.push_back(new_prop);
 	};//生成随机新道具
 	void on_updata(int delta)

@@ -87,6 +87,8 @@ Atlas atlas_run_effect;
 Atlas atlas_jump_effect;
 //道具资源
 IMAGE img_prop;
+IMAGE img_blood_prop;
+IMAGE img_energy_prop;
 
 Scene* game_scene = nullptr;
 Scene* menu_scene = nullptr;
@@ -147,6 +149,8 @@ void load_game_resources()
 	loadimage(&img_winner_bar, L"resources/winnner_bar.png");
 
 	loadimage(&img_prop, L"resources/Chest.png",80,60);
+	loadimage(&img_blood_prop, L"resources/Red_Potion.png",90,105);
+	loadimage(&img_energy_prop, L"resources/Blue_Potion.png", 90, 105);
 
 	atlas_sunflower_idle_right.load_from_file(L"resources/sunflower_idle_%d.png", 8);
 	atlas_sunflower_die_right.load_from_file(L"resources/sunflower_die_%d.png", 2);

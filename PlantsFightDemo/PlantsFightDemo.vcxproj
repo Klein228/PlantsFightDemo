@@ -132,8 +132,10 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Atlas.h" />
+    <ClInclude Include="BloodProp.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EnergyProp.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="JumpParticle.h" />
     <ClInclude Include="MenuScene.h" />

@@ -456,7 +456,7 @@ public:
 	}
 	void set_energy(int e)
 	{
-		energy = e;
+		energy = e>100?100:e;
 	}
 	playerCharacter get_player_type()
 	{

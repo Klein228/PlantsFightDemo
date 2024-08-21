@@ -22,7 +22,6 @@ public:
 		putimage_alpha(pos_render.x, pos_render.y, img, &camera);
 		if (is_debug)
 		{
-			setlinecolor(RED);
 			Line(&camera);
 		}
 	}

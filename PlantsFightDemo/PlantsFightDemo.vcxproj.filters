@@ -110,6 +110,12 @@
     <ClInclude Include="PropManager.h">
       <Filter>头文件\props</Filter>
     </ClInclude>
+    <ClInclude Include="BloodProp.h">
+      <Filter>头文件\props</Filter>
+    </ClInclude>
+    <ClInclude Include="EnergyProp.h">
+      <Filter>头文件\props</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlantsFightDemo.rc">
