@@ -33,7 +33,7 @@ public:
 			});
 	}
 	~PeaBullet(){}
-	void on_updata(int delta)
+	virtual void on_updata(int delta)
 	{
 		updata_is_out_window();
 		if (is_exploded_over) //×Óµ¯±¬Õ¨¶¯»­½áÊø

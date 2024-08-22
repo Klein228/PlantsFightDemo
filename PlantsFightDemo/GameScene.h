@@ -17,6 +17,7 @@ extern IMAGE img_peashooter_head;
 extern IMAGE img_1P_winner;
 extern IMAGE img_2P_winner;
 extern IMAGE img_winner_bar;
+extern IMAGE img_coins;
 extern Camera main_camera;
 extern std::vector<Platform> list_platform;
 extern bool is_debug;
@@ -73,7 +74,7 @@ public:
 		size_cursor = { img_cursor_1P.getwidth(),img_cursor_1P.getheight() };
 		//光标显示计时初始化
 		timer_cursor_view.set_one_shot(true);
-		timer_cursor_view.set_wait_time(5000);
+		timer_cursor_view.set_wait_time(2000);
 		timer_cursor_view.set_callback([&]() {
 			cursor_timeout = true;
 			});
@@ -187,6 +188,8 @@ public:
 		player2->bullet_draw(main_camera);
 		//血条和能量条的渲染
 		draw_blood_energy(player1->get_blood(), player1->get_energy(), player2->get_blood(), player2->get_energy());
+		//特殊技能数量渲染
+		draw_ultra_skill(player1, player2);
 		//游戏结束判定
 		if (game_over)
 		{
@@ -194,6 +197,19 @@ public:
 			putimage_alpha((window_size.x - img_winner_bar.getwidth()) / 2-1080*(1-percent_over_tie), (window_size.y - img_winner_bar.getheight()) / 2, &img_winner_bar);
 			if(winner_id==1)putimage_alpha((window_size.x - img_1P_winner.getwidth()) / 2 - 1080 *(1- percent_over_tie), (window_size.y - img_1P_winner.getheight()) / 2, &img_1P_winner);
 			else putimage_alpha((window_size.x - img_2P_winner.getwidth()) / 2-1080*(1-percent_over_tie), (window_size.y - img_2P_winner.getheight()) / 2, &img_2P_winner);
+		}
+	}
+	void draw_ultra_skill(Player* p1, Player* p2)
+	{
+		int n1=p1->get_ultraSkill_num();
+		int n2 = p2->get_ultraSkill_num();
+		for (size_t i = 0; i < n1; i++)
+		{
+			putimage_alpha(window_size.x * 1 / 5 + i * 80, window_size.y * 4 / 5 + 100, &img_coins);
+		}
+		for (size_t i = 0; i < n2; i++)
+		{
+			putimage_alpha(window_size.x * 3 / 5 + i * 80, window_size.y * 4 / 5 + 100, &img_coins);
 		}
 	}
 	void draw_blood_energy(int b1, int e1, int b2, int e2)

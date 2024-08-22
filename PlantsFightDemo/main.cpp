@@ -73,6 +73,7 @@ IMAGE img_peashooter_head;
 IMAGE img_1P_winner;
 IMAGE img_2P_winner;
 IMAGE img_winner_bar;
+IMAGE img_coins;
 Atlas atlas_sun_text;
 //×Óµ¯
 Atlas atlas_sunflower_bullet;
@@ -147,6 +148,7 @@ void load_game_resources()
 	loadimage(&img_1P_winner, L"resources/1P_winner.png");
 	loadimage(&img_2P_winner, L"resources/2P_winner.png");
 	loadimage(&img_winner_bar, L"resources/winnner_bar.png");
+	loadimage(&img_coins, L"resources/Coins.png",50,50);
 
 	loadimage(&img_prop, L"resources/Chest.png",80,60);
 	loadimage(&img_blood_prop, L"resources/Red_Potion.png",90,105);

@@ -6,6 +6,7 @@
 #include"bullet.h"
 #include"SunBullet.h"
 #include"SunBulletEx.h"
+#include"SunBulletProp.h"
 #include<graphics.h>
 extern Camera main_camera;
 extern Atlas atlas_sunflower_run_right;
@@ -96,8 +97,9 @@ public:
 	}
 	void on_updata(int delta)
 	{
+		is_player_in_window();
 		//ËÀÍö×´Ì¬¼ì²â
-		if (blood <= 0)
+		if (blood <= 0||out_window)
 		{
 			state = playerState::die;
 			animation_player_die_left.on_updata(delta);
@@ -178,15 +180,38 @@ public:
 		//¼¼ÄÜ
 		if (ex_key_down && energy == 100)
 		{
-			main_camera.shake(20, 200);
-			mciSendString(L"play sun_text from 0", NULL, 0, NULL);
-			energy = 0;
-			bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
-			ex_key_down = false;
-			state = playerState::attack;
-			animation_player_attack_left.reset();
-			animation_player_attack_right.reset();
-			animation_sun_text.reset();
+			if (num_skill_ultra > 0)
+			{
+				mciSendString(L"play sun_text from 0", NULL, 0, NULL);
+				energy = 0;
+				num_skill_ultra--;
+				bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
+				for (int i = 0; i < 15; i++)
+				{
+					int px = rand() % (getwidth() - 50);
+					int py = rand() % 1000;
+					bullets.push_back(new SunBulletProp(px, -py-100));
+				}
+
+				ex_key_down = false;
+				state = playerState::attack;
+				animation_player_attack_left.reset();
+				animation_player_attack_right.reset();
+				animation_sun_text.reset();
+			}
+			else
+			{
+				main_camera.shake(20, 200);
+				mciSendString(L"play sun_text from 0", NULL, 0, NULL);
+				energy = 0;
+				bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
+				ex_key_down = false;
+				state = playerState::attack;
+				animation_player_attack_left.reset();
+				animation_player_attack_right.reset();
+				animation_sun_text.reset();
+			}
+			
 		}
 		//×´Ì¬¶¯»­¸üÐÂ
 		if (facing_right)

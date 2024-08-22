@@ -2,10 +2,18 @@
 #include"Prop.h"
 #include"BloodProp.h"
 #include"EnergyProp.h"
+#include"UltraSkillProp.h"
 #include<vector>
 extern IMAGE img_prop;
 class PropManager
 {
+public:
+	enum class propType {
+		blood,
+		energy,
+		ultra_skill,
+		total_num
+	};
 public:
 	PropManager(Player* p1, Player* p2)
 	{
@@ -24,8 +32,22 @@ public:
 		int rand_x = rand() % (getwidth()-img_prop.getwidth());
 		int rand_y = 0-img_prop.getheight();
 		Prop* new_prop;
-		if (rand_x % 2 == 0)new_prop = new BloodProp(rand_x, rand_y, player1, player2);
-		else new_prop = new EnergyProp(rand_x, rand_y, player1, player2);
+		switch ((PropManager::propType)(rand_x%(int)(propType::total_num)))
+		{
+		case PropManager::propType::blood:
+			new_prop = new BloodProp(rand_x, rand_y, player1, player2);
+			break;
+		case PropManager::propType::energy:
+			new_prop = new EnergyProp(rand_x, rand_y, player1, player2);
+			break;
+		case PropManager::propType::ultra_skill:
+			new_prop = new UltraSkillProp(rand_x, rand_y, player1, player2);
+			break;
+		case PropManager::propType::total_num:
+			break;
+		default:
+			break;
+		}
 		prop_list.push_back(new_prop);
 	};//生成随机新道具
 	void on_updata(int delta)

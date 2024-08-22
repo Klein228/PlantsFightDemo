@@ -3,6 +3,7 @@
 #include"Animation.h"
 #include"Timer.h"
 #include"PeaBullet.h"
+#include"PeaTrackingBullet.h"
 extern Camera main_camera;
 extern Atlas atlas_peashooter_run_right;
 extern Atlas atlas_peashooter_idle_right;
@@ -12,6 +13,8 @@ extern Atlas atlas_peashooter_run_left;
 extern Atlas atlas_peashooter_idle_left;
 extern Atlas atlas_peashooter_die_left;
 extern Atlas atlas_peashooter_attack_left;
+extern Player *player1;
+extern Player *player2;
 class PeaShooter:public Player
 {
 public:
@@ -57,9 +60,10 @@ public:
 		animation_player_attack_right.set_loop(true);
 		//计时器初始化
 		timer_ex_peashot.set_one_shot(false);
-		timer_ex_peashot.set_wait_time(200);
+		timer_ex_peashot.set_wait_time(100);
 		timer_ex_peashot.set_callback([&]() {
-			bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
+			if (!super_skill)bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
+			else bullets.push_back(new PeaTrackingBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right, this ==player1 ? player2 : player1));
 			});
 		timer_ex_skill.set_one_shot(false);
 		timer_ex_skill.set_wait_time(2000);
@@ -67,6 +71,7 @@ public:
 			timer_ex_skill.restart();
 			timer_ex_skill.pause();
 			timer_ex_peashot.pause();
+			super_skill = false;
 			if (state == playerState::attack)state = playerState::idle;
 			});
 		timer_ex_skill.pause();
@@ -95,7 +100,8 @@ public:
 	void on_updata(int delta)
 	{
 		//死亡状态检测
-		if (blood <= 0)
+		is_player_in_window();
+		if (blood <= 0||out_window)
 		{
 			state = playerState::die;
 			animation_player_die_left.on_updata(delta);
@@ -179,13 +185,28 @@ public:
 		//技能
 		if (energy == 100&&ex_key_down&&state!=playerState::attack)
 		{
-			mciSendString(L"play pea_shoot_ex from 0", NULL, 0, NULL);
-			main_camera.shake(10, 2000);
-			ex_key_down = false;
-			energy = 0;
-			state = playerState::attack;
-			timer_ex_peashot.resume();
-			timer_ex_skill.resume();	
+			if (num_skill_ultra > 0)
+			{
+				mciSendString(L"play pea_shoot_ex from 0", NULL, 0, NULL);
+				super_skill = true;
+				energy = 0;
+				ex_key_down = false;
+				num_skill_ultra--;
+				state = playerState::attack;
+				timer_ex_peashot.resume();
+				timer_ex_skill.resume();
+			}
+			else
+			{
+				mciSendString(L"play pea_shoot_ex from 0", NULL, 0, NULL);
+				main_camera.shake(10, 2000);
+				ex_key_down = false;
+				energy = 0;
+				state = playerState::attack;
+				timer_ex_peashot.resume();
+				timer_ex_skill.resume();
+			}
+				
 		}
 		//状态动画更新
 		if (facing_right)
@@ -243,4 +264,5 @@ private:
 	bool can_attack = true;//攻击间隔时间是否已过
 	Timer timer_run_effect;//跑动粒子产生计时器
 	bool can_generate_run_effect = true;
+	bool super_skill = false;
 };

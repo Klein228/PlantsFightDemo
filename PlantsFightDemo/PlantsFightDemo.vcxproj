@@ -142,6 +142,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="PeaBullet.h" />
     <ClInclude Include="PeaShooter.h" />
+    <ClInclude Include="PeaTrackingBullet.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Prop.h" />
@@ -153,8 +154,10 @@
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="SunBullet.h" />
     <ClInclude Include="SunBulletEx.h" />
+    <ClInclude Include="SunBulletProp.h" />
     <ClInclude Include="SunFlower.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UltraSkillProp.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>

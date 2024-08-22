@@ -116,6 +116,15 @@
     <ClInclude Include="EnergyProp.h">
       <Filter>头文件\props</Filter>
     </ClInclude>
+    <ClInclude Include="SunBulletProp.h">
+      <Filter>头文件\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="UltraSkillProp.h">
+      <Filter>头文件\props</Filter>
+    </ClInclude>
+    <ClInclude Include="PeaTrackingBullet.h">
+      <Filter>头文件\bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlantsFightDemo.rc">

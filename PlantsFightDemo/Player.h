@@ -9,6 +9,7 @@
 #include"RunParticle.h"
 #include"JumpParticle.h"
 extern Camera main_camera;
+extern const POINT window_size;
 extern std::vector<Platform> list_platform;
 class Player
 {
@@ -319,7 +320,7 @@ public:
 		if (id == 1)
 		{
 			facing_right = true;
-			pos_player = { 100,0 };
+			pos_player = { 280,0 };
 		}
 		else
 		{
@@ -466,6 +467,18 @@ public:
 	{
 		this->call_back = fun;
 	}
+	void is_player_in_window()
+	{
+		if (pos_player.y >= window_size.y + 100)out_window = true;
+	}
+	int get_ultraSkill_num()
+	{
+		return num_skill_ultra;
+	}
+	void set_ultraSkill_num(int n)
+	{
+		num_skill_ultra = n > 3 ? 3 : n;
+	}
 protected:
 	int id=1;//玩家id
 	Vector2 speed_vector = { 0.0,0.0 };//速度
@@ -474,6 +487,7 @@ protected:
 	float run_speed=0.1;//移动速度
 	float jump_speed = 0.65;//跳跃初始速度
 	bool is_collision = false;//是否碰撞到平台
+	bool out_window = false;
 	playerState state = playerState::idle;//当前动画状态
 	Vector2 pos_player = { 0,0 };//玩家图片渲染位置
 	Vector2 pos_enemy_player = { 0,0 };//敌对玩家中心位置
@@ -500,4 +514,6 @@ protected:
 	int energy=0;
 	std::function<void()> call_back;//玩家死亡调用
 	std::vector<Particle*> list_particle_effects;//粒子列表
+
+	int num_skill_ultra = 0;
 };
