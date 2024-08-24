@@ -125,6 +125,9 @@
     <ClInclude Include="PeaTrackingBullet.h">
       <Filter>头文件\bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlantsFightDemo.rc">

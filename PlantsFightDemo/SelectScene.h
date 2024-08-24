@@ -180,6 +180,22 @@ public:
 				this->on_exit();
 				is_exit = true;
 				break;
+			case 'A':
+				character_1P = (enum Character)(((int)character_1P - 1 + countnum) % countnum);
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+				break;
+			case 'D':
+				character_1P = (enum Character)(((int)character_1P + 1 + countnum) % countnum);
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+				break;
+			case VK_LEFT:
+				character_2P = (enum Character)(((int)character_2P - 1 + countnum) % countnum);
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+				break;
+			case VK_RIGHT:
+				character_2P = (enum Character)(((int)character_2P + 1 + countnum) % countnum);
+				mciSendString(L"play btn from 0", NULL, 0, NULL);
+				break;
 			default:
 				break;
 			}

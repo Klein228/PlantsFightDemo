@@ -74,9 +74,9 @@ public:
 		animation_sun_text.set_loop(false);
 
 		//普通攻击计时器初始化
-		timer_attack.set_one_shot(false);
-		timer_attack.set_wait_time(500);//攻击间隔时间ms
-		timer_attack.set_callback([&]() {
+		timer_interval_attack.set_one_shot(false);
+		timer_interval_attack.set_wait_time(500);//攻击间隔时间ms
+		timer_interval_attack.set_callback([&]() {
 			can_attack = true;
 			});
 		//粒子计时器初始化
@@ -97,85 +97,15 @@ public:
 	}
 	void on_updata(int delta)
 	{
-		is_player_in_window();
-		//死亡状态检测
-		if (blood <= 0||out_window)
-		{
-			state = playerState::die;
-			animation_player_die_left.on_updata(delta);
-			animation_player_die_right.on_updata(delta);
-			return;
-		}
-		//移动状态检测
-		if (left_key_down)
-		{
-			if (right_key_down)
-			{
-				speed_vector.x = 0;
-				if(state!=playerState::attack)state = playerState::idle;
-			}
-			else
-			{
-				speed_vector.x = 0 - run_speed;
-				if (state != playerState::attack)
-				{
-					state = playerState::run;
-					if (is_collision && can_generate_run_effect) {
-						list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-						can_generate_run_effect = false;
-						timer_run_effect.restart();
-					}
-				}
-			}
-		}
-		else
-		{
-			if (right_key_down)
-			{
-				speed_vector.x = run_speed;
-				if (state != playerState::attack)state = playerState::run;
-				if (is_collision && can_generate_run_effect) {
-					list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-					can_generate_run_effect = false;
-					timer_run_effect.restart();
-				}
-			}
-			else
-			{
-				speed_vector.x = 0;
-				if (state != playerState::attack)state = playerState::idle;
-			}
-		}
-		//碰撞检测
-		move_collision(delta);
-		//跳跃按键处理
-		if (up_key_down)
-		{
-			speed_vector.y = 0 - jump_speed;
-			up_key_down = false;
-			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-		}
-		//子弹列表处理
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			bullets[i]->on_updata(delta);
-		}
-		updata_bullet_list();
-		//粒子状态更新
-		for (size_t i = 0; i < list_particle_effects.size(); i++)
-		{
-			list_particle_effects[i]->on_updata(delta);
-		}
-		updata_particle_list();
-		timer_run_effect.on_updata(delta);
+		Player::on_updata(delta);
 		//攻击状态
-		timer_attack.on_updata(delta);
+		timer_interval_attack.on_updata(delta);
 		if (attack_key_down && can_attack)
 		{
 			bullets.push_back(new SunBullet(pos_player.x, pos_player.y, facing_right));
 			attack_key_down = false;
 			can_attack = false;
-			timer_attack.restart();
+			timer_interval_attack.restart();
 		}
 		//技能
 		if (ex_key_down && energy == 100)
@@ -266,11 +196,5 @@ public:
 
 
 private:
-
 	Animation animation_sun_text;
-	Timer timer_run_effect;//跑动粒子产生计时器
-	bool can_generate_run_effect = true;
-
-	Timer timer_attack;//普通攻击间隔计时器
-	bool can_attack=true;//能进行攻击标志
 };

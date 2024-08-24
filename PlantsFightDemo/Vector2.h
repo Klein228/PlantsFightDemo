@@ -46,7 +46,7 @@ public:
 		x /= v;
 		y /= v;
 	}
-	float length()
+	float length() const
 	{
 		return sqrt(x * x + y * y);
 	}
@@ -55,6 +55,9 @@ public:
 		float len = length();
 		if (len == 0)return Vector2(0, 0);
 		return Vector2(x / len, y / len);
+	}
+	double dot(const Vector2& other) const {
+		return x * other.x + y * other.y;
 	}
 	float x;
 	float y;

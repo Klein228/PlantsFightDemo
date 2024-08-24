@@ -76,3 +76,39 @@ inline void putimage_ex(IMAGE* img, const Rect* rect_dst, const Rect* rect_src =
 		GetImageHDC(img), rect_src ? rect_src->x : 0, rect_src ? rect_src->y : 0,
 		rect_src ? rect_src->w : img->getwidth(), rect_src ? rect_src->h : img->getheight(), blend_func);
 }
+double AngleBetweenVectors(const Vector2& a, const Vector2& b) {
+	double dotProduct = a.dot(b);
+	double magnitudeA = a.length();
+	double magnitudeB = b.length();
+
+	// 检查除数是否为零以避免除以零的错误
+	if (magnitudeA == 0 || magnitudeB == 0) {
+		throw std::invalid_argument("One of the vectors has zero magnitude.");
+	}
+
+	// 计算夹角的余弦值
+	double cosTheta = dotProduct / (magnitudeA * magnitudeB);
+
+	// 确保余弦值在[-1, 1]范围内，以避免由于浮点数精度问题导致的误差
+	cosTheta = cosTheta > 1.0 ? 1.0 : (cosTheta < -1.0 ? -1.0 : cosTheta);
+
+	// 使用acos函数计算夹角
+	return std::acos(cosTheta);
+}
+// 使用旋转矩阵顺时针旋转向量
+Vector2 RotateVectorByMatrix(const Vector2& v, double angleInDegrees) {
+	// 将角度转换为弧度
+	double angleInRadians = angleInDegrees * (M_PI / 180.0);
+
+	// 计算旋转矩阵的元素
+	double cosTheta = std::cos(angleInRadians);
+	double sinTheta = std::sin(angleInRadians);
+
+	// 应用旋转矩阵
+	Vector2 rotatedVector(
+		cosTheta * v.x + sinTheta * v.y, // 新的x坐标
+		-sinTheta * v.x + cosTheta * v.y  // 注意这里是sinTheta乘以原向量的x坐标
+	);
+
+	return rotatedVector;
+}

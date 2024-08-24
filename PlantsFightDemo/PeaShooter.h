@@ -99,77 +99,7 @@ public:
 	}
 	void on_updata(int delta)
 	{
-		//死亡状态检测
-		is_player_in_window();
-		if (blood <= 0||out_window)
-		{
-			state = playerState::die;
-			animation_player_die_left.on_updata(delta);
-			animation_player_die_right.on_updata(delta);
-			return;
-		}
-		//移动状态检测
-		if (left_key_down)
-		{
-			if (right_key_down)
-			{
-				speed_vector.x = 0;
-				if (state != playerState::attack)state = playerState::idle;
-			}
-			else
-			{
-				speed_vector.x = 0 - run_speed;
-				if (state != playerState::attack)
-				{
-					state = playerState::run;
-					if (is_collision && can_generate_run_effect) {
-						list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-						can_generate_run_effect = false;
-						timer_run_effect.restart();
-					}
-				}
-			}
-		}
-		else
-		{
-			if (right_key_down)
-			{
-				speed_vector.x = run_speed;
-				if (state != playerState::attack)state = playerState::run;
-				if (is_collision && can_generate_run_effect) {
-					list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-					can_generate_run_effect = false;
-					timer_run_effect.restart();
-				}
-			}
-			else
-			{
-				speed_vector.x = 0;
-				if (state != playerState::attack)state = playerState::idle;
-			}
-		}
-		//平台碰撞检测
-		move_collision(delta);
-		//跳跃按键处理
-		if (up_key_down)
-		{
-			speed_vector.y = 0 - jump_speed;
-			up_key_down = false;
-			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
-		}
-		//子弹更新
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			bullets[i]->on_updata(delta);
-		}
-		updata_bullet_list();
-		//粒子状态更新
-		for (size_t i = 0; i < list_particle_effects.size(); i++)
-		{
-			list_particle_effects[i]->on_updata(delta);
-		}
-		updata_particle_list();
-		timer_run_effect.on_updata(delta);
+		Player::on_updata(delta);
 		//攻击状态
 		timer_interval_attack.on_updata(delta);//攻击间隔更新
 		if (attack_key_down&&can_attack)
@@ -260,9 +190,5 @@ public:
 private:
 	Timer timer_ex_skill;//技能持续时长计时器
 	Timer timer_ex_peashot;//技能子弹循环产生计时器
-	Timer timer_interval_attack;//普通攻击间隔计时器
-	bool can_attack = true;//攻击间隔时间是否已过
-	Timer timer_run_effect;//跑动粒子产生计时器
-	bool can_generate_run_effect = true;
 	bool super_skill = false;
 };
