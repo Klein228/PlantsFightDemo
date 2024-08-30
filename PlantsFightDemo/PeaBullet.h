@@ -72,6 +72,10 @@ public:
 		}
 
 	}
+	virtual void play_collision_music()
+	{
+		mciSendString(L"play pea_break_1 from 0", NULL, 0, NULL);
+	}
 private:
 
 };

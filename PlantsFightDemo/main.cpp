@@ -61,6 +61,15 @@ Atlas atlas_peashooter_run_left;
 Atlas atlas_peashooter_idle_left;
 Atlas atlas_peashooter_die_left;
 Atlas atlas_peashooter_attack_left;
+
+Atlas atlas_ninja_run_right;
+Atlas atlas_ninja_idle_right;
+Atlas atlas_ninja_die_right;
+Atlas atlas_ninja_attack_right;
+Atlas atlas_ninja_run_left;
+Atlas atlas_ninja_idle_left;
+Atlas atlas_ninja_die_left;
+Atlas atlas_ninja_attack_left;
 //游戏场景资源加载
 IMAGE img_hills;
 IMAGE img_sky;
@@ -69,6 +78,7 @@ IMAGE img_platform_small;
 IMAGE img_cursor_1P;
 IMAGE img_cursor_2P;
 IMAGE img_sunflower_head;
+IMAGE img_ninja_head;
 IMAGE img_peashooter_head;
 IMAGE img_1P_winner;
 IMAGE img_2P_winner;
@@ -145,6 +155,7 @@ void load_game_resources()
 
 	loadimage(&img_sunflower_head, L"resources/avatar_sunflower.png");
 	loadimage(&img_peashooter_head, L"resources/avatar_peashooter.png");
+	loadimage(&img_ninja_head, L"resources/character/ninja/Ninja_head.png",84,84);
 	loadimage(&img_1P_winner, L"resources/1P_winner.png");
 	loadimage(&img_2P_winner, L"resources/2P_winner.png");
 	loadimage(&img_winner_bar, L"resources/winnner_bar.png");
@@ -171,6 +182,15 @@ void load_game_resources()
 	flip_atlas(atlas_peashooter_attack_right, atlas_peashooter_attack_left);
 	flip_atlas(atlas_peashooter_die_right, atlas_peashooter_die_left);
 	flip_atlas(atlas_peashooter_run_right, atlas_peashooter_run_left);
+
+	atlas_ninja_idle_right.load_from_file(L"resources/character/ninja/Idle__00%d.png", 10,50,100);
+	atlas_ninja_die_right.load_from_file(L"resources/character/ninja/Dead__00%d.png", 10, 100, 100);
+	atlas_ninja_run_right.load_from_file(L"resources/character/ninja/Run__00%d.png", 10, 90, 100);
+	atlas_ninja_attack_right.load_from_file(L"resources/character/ninja/Attack__00%d.png", 10,100,100);
+	flip_atlas(atlas_ninja_idle_right, atlas_ninja_idle_left);
+	flip_atlas(atlas_ninja_attack_right, atlas_ninja_attack_left);
+	flip_atlas(atlas_ninja_die_right, atlas_ninja_die_left);
+	flip_atlas(atlas_ninja_run_right, atlas_ninja_run_left);
 
 	atlas_sunflower_bullet.load_from_file(L"resources/sun_%d.png", 5);
 	atlas_sunflower_bullet_ex.load_from_file(L"resources/sun_ex_%d.png", 5);

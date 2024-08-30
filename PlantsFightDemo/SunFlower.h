@@ -102,7 +102,7 @@ public:
 		timer_interval_attack.on_updata(delta);
 		if (attack_key_down && can_attack)
 		{
-			bullets.push_back(new SunBullet(pos_player.x, pos_player.y, facing_right));
+			damage_objects.push_back(new SunBullet(pos_player.x, pos_player.y, facing_right));
 			attack_key_down = false;
 			can_attack = false;
 			timer_interval_attack.restart();
@@ -115,12 +115,12 @@ public:
 				mciSendString(L"play sun_text from 0", NULL, 0, NULL);
 				energy = 0;
 				num_skill_ultra--;
-				bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
+				damage_objects.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
 				for (int i = 0; i < 15; i++)
 				{
 					int px = rand() % (getwidth() - 50);
 					int py = rand() % 1000;
-					bullets.push_back(new SunBulletProp(px, -py-100));
+					damage_objects.push_back(new SunBulletProp(px, -py-100));
 				}
 
 				ex_key_down = false;
@@ -134,7 +134,7 @@ public:
 				main_camera.shake(20, 200);
 				mciSendString(L"play sun_text from 0", NULL, 0, NULL);
 				energy = 0;
-				bullets.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
+				damage_objects.push_back(new SunBulletEx(pos_enemy_player.x, pos_enemy_player.y));
 				ex_key_down = false;
 				state = playerState::attack;
 				animation_player_attack_left.reset();

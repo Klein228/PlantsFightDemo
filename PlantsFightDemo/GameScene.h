@@ -14,6 +14,7 @@ extern IMAGE img_cursor_1P;
 extern IMAGE img_cursor_2P;
 extern IMAGE img_sunflower_head;
 extern IMAGE img_peashooter_head;
+extern IMAGE img_ninja_head;
 extern IMAGE img_1P_winner;
 extern IMAGE img_2P_winner;
 extern IMAGE img_winner_bar;
@@ -146,8 +147,8 @@ public:
 			main_camera.on_updata(delta);
 			timer_cursor_view.on_updata(delta);
 			timer_prop_generate.on_updata(delta);
-			player1->bullets_collision(player2->get_bullets());
-			player2->bullets_collision(player1->get_bullets());
+			player1->damage_objects_collision(player2->get_damage_objects());
+			player2->damage_objects_collision(player1->get_damage_objects());
 			player1->set_enemy_player_center_pos(player2->get_pos_center());
 			player2->set_enemy_player_center_pos(player1->get_pos_center());
 			player1->on_updata(delta);
@@ -184,8 +185,8 @@ public:
 		player2->on_draw(main_camera);
 		prop_manager->on_draw(main_camera);
 		//分离子弹和玩家的渲染,画面表现更真实
-		player1->bullet_draw(main_camera);
-		player2->bullet_draw(main_camera);
+		player1->damage_objects_draw(main_camera);
+		player2->damage_objects_draw(main_camera);
 		//血条和能量条的渲染
 		draw_blood_energy(player1->get_blood(), player1->get_energy(), player2->get_blood(), player2->get_energy());
 		//特殊技能数量渲染
@@ -214,7 +215,20 @@ public:
 	}
 	void draw_blood_energy(int b1, int e1, int b2, int e2)
 	{
-		putimage_alpha(window_size.x * 1 / 10, window_size.y * 4 / 5, (p1_character == Player::playerCharacter::sunflower )? ( & img_sunflower_head ): ( & img_peashooter_head));
+		switch (p1_character)
+		{
+		case Player::playerCharacter::sunflower:
+			putimage_alpha(window_size.x * 1 / 10, window_size.y * 4 / 5,&img_sunflower_head);
+			break;
+		case Player::playerCharacter::peashoooter:
+			putimage_alpha(window_size.x * 1 / 10, window_size.y * 4 / 5, &img_peashooter_head);
+			break;
+		case Player::playerCharacter::ninja:
+			putimage_alpha(window_size.x * 1 / 10, window_size.y * 4 / 5, &img_ninja_head);
+			break;
+		default:
+			break;
+		}
 		setfillcolor((45, 45, 45));
 		fillroundrect(window_size.x * 1 / 5, window_size.y * 4 / 5, window_size.x * 1 / 5 + 300, window_size.y * 4 / 5 + 40,10,10);
 		setfillcolor(RED);
@@ -224,8 +238,20 @@ public:
 		setfillcolor(BLUE);
 		fillroundrect(window_size.x * 1 / 5, window_size.y * 4 / 5 + 50, window_size.x * 1 / 5 + e1 * bar_chip_length, window_size.y * 4 / 5 + 90,10,10);
 
-
-		putimage_alpha(window_size.x * 1 / 2, window_size.y * 4 / 5, (p2_character == Player::playerCharacter::sunflower) ? (&img_sunflower_head) : (&img_peashooter_head));
+		switch (p2_character)
+		{
+		case Player::playerCharacter::sunflower:
+			putimage_alpha(window_size.x * 1 / 2, window_size.y * 4 / 5,  &img_sunflower_head);
+			break;
+		case Player::playerCharacter::peashoooter:
+			putimage_alpha(window_size.x * 1 / 2, window_size.y * 4 / 5, &img_peashooter_head);
+			break;
+		case Player::playerCharacter::ninja:
+			putimage_alpha(window_size.x * 1 / 2, window_size.y * 4 / 5, &img_ninja_head);
+			break;
+		default:
+			break;
+		}
 		setfillcolor((45, 45, 45));
 		fillroundrect(window_size.x * 3 / 5, window_size.y * 4 / 5, window_size.x * 3 / 5 + 300, window_size.y * 4 / 5 + 40,10,10);
 		setfillcolor(RED);

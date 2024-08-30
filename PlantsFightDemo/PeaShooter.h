@@ -62,8 +62,8 @@ public:
 		timer_ex_peashot.set_one_shot(false);
 		timer_ex_peashot.set_wait_time(100);
 		timer_ex_peashot.set_callback([&]() {
-			if (!super_skill)bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
-			else bullets.push_back(new PeaTrackingBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right, this ==player1 ? player2 : player1));
+			if (!super_skill)damage_objects.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
+			else damage_objects.push_back(new PeaTrackingBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right, this ==player1 ? player2 : player1));
 			});
 		timer_ex_skill.set_one_shot(false);
 		timer_ex_skill.set_wait_time(2000);
@@ -106,7 +106,7 @@ public:
 		{
 			mciSendString(L"play pea_shoot_2 from 0", NULL, 0, NULL);
 			can_attack = false;
-			bullets.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
+			damage_objects.push_back(new PeaBullet(pos_player.x + img_size.x / 3, pos_player.y + img_size.y * 1 / 16, facing_right));
 			attack_key_down = false;
 			timer_interval_attack.restart();
 		}

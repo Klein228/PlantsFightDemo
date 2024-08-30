@@ -135,10 +135,13 @@
     <ClInclude Include="BloodProp.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DamageObject.h" />
     <ClInclude Include="EnergyProp.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="JumpParticle.h" />
     <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Ninja.h" />
+    <ClInclude Include="Ninja_Sword.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="PeaBullet.h" />
     <ClInclude Include="PeaShooter.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="utils.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PlantsFightDemo.rc" />

@@ -86,6 +86,10 @@ public:
 		}
 		
 	}
+	virtual void play_collision_music()
+	{
+		mciSendString(L"play sun_explode from 0", NULL, 0, NULL);
+	}
 protected:
 	float gravity_sunbullet = 8e-4;//太阳花普通子弹所受重力方向速度变化大小
 	float speed_x = 0.4;//太阳花普通子弹的初始x速度

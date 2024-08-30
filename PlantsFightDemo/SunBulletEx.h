@@ -72,7 +72,10 @@ public:
 			animation_bullet.on_draw(pos_bullet.x, pos_bullet.y);
 		}
 	}
-
+	virtual void play_collision_music()
+	{
+		mciSendString(L"play sun_explode_ex from 0", NULL, 0, NULL);
+	}
 private:
 	Vector2 bullet_speed = { 0,0 };
 	float speed_x = 0;

@@ -4,6 +4,7 @@
 #include"GameScene.h"
 #include"PeaShooter.h"
 #include"SunFlower.h"
+#include"Ninja.h"
 extern bool is_exit;
 extern SceneManager scene_manager;
 extern const POINT window_size;
@@ -29,6 +30,8 @@ extern Atlas atlas_sunflower_idle_right;
 extern Atlas atlas_sunflower_idle_left;
 extern Atlas atlas_peashooter_idle_right;
 extern Atlas atlas_peashooter_idle_left;
+extern Atlas atlas_ninja_idle_right;
+extern Atlas atlas_ninja_idle_left;
 extern IMAGE img_1P_desc;
 extern IMAGE img_2P_desc;
 extern Player* player1;
@@ -40,6 +43,7 @@ public:
 	{
 		peashooter,
 		sunflower,
+		ninja,
 		countnum
 	};
 	SelectScene() {}
@@ -94,12 +98,18 @@ public:
 		animation_1P_sunflower.set_atlas(&atlas_sunflower_idle_right);
 		animation_1P_sunflower.set_interval(200);
 		animation_1P_sunflower.set_loop(true);
+		animation_1P_ninja.set_atlas(&atlas_ninja_idle_right);
+		animation_1P_ninja.set_interval(200);
+		animation_1P_ninja.set_loop(true);
 		animation_2P_peashooter.set_atlas(&atlas_peashooter_idle_left);
 		animation_2P_peashooter.set_interval(200);
 		animation_2P_peashooter.set_loop(true);
 		animation_2P_sunflower.set_atlas(&atlas_sunflower_idle_left);
 		animation_2P_sunflower.set_interval(200);
 		animation_2P_sunflower.set_loop(true);
+		animation_2P_ninja.set_atlas(&atlas_ninja_idle_right);
+		animation_2P_ninja.set_interval(200);
+		animation_2P_ninja.set_loop(true);
 
 		pos_1P_animation.x = pos_table.x + (img_character_table.getwidth() - atlas_peashooter_idle_right.get_img_at(0)->getwidth()) / 2;
 		pos_1P_animation.y = pos_table.y + pos_table.y * 2/ 3;
@@ -213,6 +223,9 @@ public:
 		case SelectScene::sunflower:
 			animation_1P_sunflower.on_updata(delta);
 			break;
+		case SelectScene::ninja:
+			animation_1P_ninja.on_updata(delta);
+			break;
 		case SelectScene::countnum:
 			break;
 		default:
@@ -225,6 +238,9 @@ public:
 			break;
 		case SelectScene::sunflower:
 			animation_2P_sunflower.on_updata(delta);
+			break;
+		case SelectScene::ninja:
+			animation_2P_ninja.on_updata(delta);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -261,6 +277,10 @@ public:
 			animation_1P_sunflower.on_draw(pos_1P_animation.x, pos_1P_animation.y);
 			outtextxy_shaded(pos_text_1P.x, pos_text_1P.y, text_sunflower);
 			break;
+		case SelectScene::ninja:
+			animation_1P_ninja.on_draw(pos_1P_animation.x, pos_1P_animation.y);
+			outtextxy_shaded(pos_text_1P.x, pos_text_1P.y, text_ninja);
+			break;
 		case SelectScene::countnum:
 			break;
 		default:
@@ -275,6 +295,10 @@ public:
 		case SelectScene::sunflower:
 			animation_2P_sunflower.on_draw(pos_2P_animation.x, pos_2P_animation.y);
 			outtextxy_shaded(pos_text_2P.x, pos_text_2P.y, text_sunflower);
+			break;
+		case SelectScene::ninja:
+			animation_2P_ninja.on_draw(pos_2P_animation.x, pos_2P_animation.y);
+			outtextxy_shaded(pos_text_2P.x, pos_text_2P.y, text_ninja);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -293,6 +317,9 @@ public:
 		case SelectScene::sunflower:
 			player1 = new SunFlower(1);
 			break;
+		case SelectScene::ninja:
+			player1 = new Ninja(1);
+			break;
 		case SelectScene::countnum:
 			break;
 		default:
@@ -305,6 +332,9 @@ public:
 			break;
 		case SelectScene::sunflower:
 			player2 = new SunFlower(2);
+			break;
+		case SelectScene::ninja:
+			player2 = new Ninja(2);
 			break;
 		case SelectScene::countnum:
 			break;
@@ -338,10 +368,13 @@ private:
 	Timer timer_btn_down;
 	Animation animation_1P_sunflower;
 	Animation animation_1P_peashooter;
+	Animation animation_1P_ninja;
 	Animation animation_2P_sunflower;
 	Animation animation_2P_peashooter;
+	Animation animation_2P_ninja;
 	Character character_1P = sunflower;
 	Character character_2P = peashooter;
 	LPCTSTR text_peashooter=L"豌豆射手";
 	LPCTSTR text_sunflower=L"向日葵";
+	LPCTSTR text_ninja = L"忍者";
 };

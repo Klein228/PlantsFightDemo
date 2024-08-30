@@ -2,7 +2,8 @@
 #include"graphics.h"
 #include"Vector2.h"
 #include"Animation.h"
-class Bullet
+#include"DamageObject.h"
+class Bullet:public DamageObject
 {
 
 public:
@@ -16,6 +17,11 @@ public:
 public:
 	Bullet() {};
 	~Bullet() {};
+	virtual bool object_over()
+	{
+		if (is_out_window || is_exploded_over)return true;
+		else return false;
+	}
 	virtual void on_updata(int delta)
 	{}
 	virtual void on_draw(Camera& camera)
@@ -52,11 +58,11 @@ public:
 	{
 		return is_exploded_over;
 	}
-	void set_bullet_damage(int d)
+	void set_damage(int d)
 	{
 		damage = d;
 	}
-	int get_bullet_damage()
+	int get_damage()
 	{
 		return damage;
 	}
@@ -85,6 +91,17 @@ public:
 	{
 		culculated = b;
 	}
+
+	virtual bool player_collision(Vector2 p, float r)
+	{
+		Vector2 center = p;
+		Vector2 center_bullet = get_center_pos();
+		float dis = get_distance(center, center_bullet);
+		if (dis <= r + radius_collision)return true;
+		else return false;
+	}
+	virtual void play_collision_music()
+	{	}
 protected:
 	Animation animation_bullet; //子弹的正常状态图
 	Animation animation_bullet_explode;//子弹接触敌人后爆炸动画

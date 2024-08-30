@@ -49,7 +49,7 @@ public:
 			if (idx_frame >= atlas->get_size() - 1)
 			{
 				idx_frame = (is_loop) ? 0 : atlas->get_size() - 1;
-				if (!is_loop && callback)
+				if (callback)
 				{
 					callback();
 				}

@@ -8,6 +8,9 @@
 #include"Particle.h"
 #include"RunParticle.h"
 #include"JumpParticle.h"
+#include"DamageObject.h"
+#include"Weapon.h"
+
 extern Camera main_camera;
 extern const POINT window_size;
 extern std::vector<Platform> list_platform;
@@ -19,12 +22,14 @@ public:
 		idle,
 		run,
 		die,
-		attack
+		attack,
+		normal_attack
 	};
 	enum class playerCharacter
 	{
 		sunflower,
-		peashoooter
+		peashoooter,
+		ninja
 	};
 public:
 	Player(int id)
@@ -171,12 +176,12 @@ public:
 			if (right_key_down)
 			{
 				speed_vector.x = 0;
-				if (state != playerState::attack)state = playerState::idle;
+				if (state != playerState::attack&& state != playerState::normal_attack)state = playerState::idle;
 			}
 			else
 			{
 				speed_vector.x = 0 - run_speed;
-				if (state != playerState::attack)
+				if (state != playerState::attack&& state != playerState::normal_attack)
 				{
 					state = playerState::run;
 					if (is_collision && can_generate_run_effect) {
@@ -192,7 +197,7 @@ public:
 			if (right_key_down)
 			{
 				speed_vector.x = run_speed;
-				if (state != playerState::attack)state = playerState::run;
+				if (state != playerState::attack && state != playerState::normal_attack)state = playerState::run;
 				if (is_collision && can_generate_run_effect) {
 					list_particle_effects.push_back(new RunParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
 					can_generate_run_effect = false;
@@ -202,7 +207,7 @@ public:
 			else
 			{
 				speed_vector.x = 0;
-				if (state != playerState::attack)state = playerState::idle;
+				if (state != playerState::attack && state != playerState::normal_attack)state = playerState::idle;
 			}
 		}
 		//碰撞检测
@@ -215,11 +220,11 @@ public:
 			list_particle_effects.push_back(new JumpParticle(get_pos_center().x, get_pos_center().y, img_size.y / 2));
 		}
 		//子弹列表处理
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < damage_objects.size(); i++)
 		{
-			bullets[i]->on_updata(delta);
+			damage_objects[i]->on_updata(delta);
 		}
-		updata_bullet_list();
+		updata_damage_objects_list();
 		//粒子状态更新
 		for (size_t i = 0; i < list_particle_effects.size(); i++)
 		{
@@ -254,6 +259,9 @@ public:
 			case Player::playerState::attack:
 				animation_player_attack_right.on_draw(pos_player.x, pos_player.y);
 				break;
+			case Player::playerState::normal_attack:
+				animation_player_normal_attack_right.on_draw(pos_player.x, pos_player.y);
+				break;
 			default:
 				break;
 			}
@@ -274,17 +282,20 @@ public:
 			case Player::playerState::attack:
 				animation_player_attack_left.on_draw(pos_player.x, pos_player.y);
 				break;
+			case Player::playerState::normal_attack:
+				animation_player_normal_attack_left.on_draw(pos_player.x, pos_player.y);
+				break;
 			default:
 				break;
 			}
 		}
 		
 	};
-	virtual void bullet_draw(Camera& camera)//由于玩家渲染必须放在子弹渲染之前,故分离出两个玩家子弹的渲染过程
+	virtual void damage_objects_draw(Camera& camera)//由于玩家渲染必须放在子弹渲染之前,故分离出两个玩家子弹的渲染过程
 	{
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < damage_objects.size(); i++)
 		{
-			bullets[i]->on_draw(camera);
+			damage_objects[i]->on_draw(camera);
 		}
 	}
 	virtual void move_collision(int delta)
@@ -323,53 +334,64 @@ public:
 			pos_player = { 1000,0 };
 		}
 	}
-	virtual std::vector<Bullet*>* get_bullets()
+	virtual std::vector<DamageObject*>* get_damage_objects()
 	{
-		return &bullets;
+		return &damage_objects;
 	}
-	virtual void bullets_collision(std::vector<Bullet*>* blts)//处理外部子弹碰撞逻辑
+	//virtual void bullets_collision(std::vector<Bullet*>* blts)//处理外部子弹碰撞逻辑
+	//{
+	//	for (size_t i = 0; i < blts->size(); i++)
+	//	{
+	//		if (blts->at(i)->get_is_collision())continue;
+	//		Vector2 pos = blts->at(i)->get_center_pos();
+	//		float r = blts->at(i)->get_radius_collission();
+	//		Vector2 pos_p = get_pos_center();
+	//		float r_p = get_radius_collision();
+	//		float distance = get_distance(pos, pos_p);
+	//		if (distance <= r + r_p)
+	//		{
+	//			//播放子弹爆炸音效 
+	//			if (!blts->at(i)->get_is_collision())
+	//			{
+	//				switch (blts->at(i)->bullet_type)
+	//				{
+	//				case Bullet::peabullet:
+	//					mciSendString(L"play pea_break_1 from 0", NULL, 0, NULL);
+	//					break;
+	//				case Bullet::sunbullet:
+	//					mciSendString(L"play sun_explode from 0", NULL, 0, NULL);
+	//					break;
+	//				case Bullet::sunbulletex:
+	//					mciSendString(L"play sun_explode_ex from 0", NULL, 0, NULL);
+	//					break;
+	//				default:
+	//					break;
+	//				}
+	//			}
+	//			blts->at(i)->set_is_collision(true);
+	//			blood = (blood - blts->at(i)->get_bullet_damage() > 0) ? blood - blts->at(i)->get_bullet_damage() : 0;
+	//			//player hurt()
+	//		}
+	//	}
+	//}
+	virtual void damage_objects_collision(std::vector<DamageObject*>* d_objects)
 	{
-		for (size_t i = 0; i < blts->size(); i++)
+		for (size_t i = 0; i < d_objects->size(); i++)
 		{
-			if (blts->at(i)->get_is_collision())continue;
-			Vector2 pos = blts->at(i)->get_center_pos();
-			float r = blts->at(i)->get_radius_collission();
-			Vector2 pos_p = get_pos_center();
-			float r_p = get_radius_collision();
-			float distance = get_distance(pos, pos_p);
-
-			if (distance <= r + r_p)
+			bool collision=d_objects->at(i)->player_collision(get_pos_center(),get_radius_collision());
+			if (collision)
 			{
-				//播放子弹爆炸音效 
-				if (!blts->at(i)->get_is_collision())
-				{
-					switch (blts->at(i)->bullet_type)
-					{
-					case Bullet::peabullet:
-						mciSendString(L"play pea_break_1 from 0", NULL, 0, NULL);
-						break;
-					case Bullet::sunbullet:
-						mciSendString(L"play sun_explode from 0", NULL, 0, NULL);
-						break;
-					case Bullet::sunbulletex:
-						mciSendString(L"play sun_explode_ex from 0", NULL, 0, NULL);
-						break;
-					default:
-						break;
-					}
-				}
-
-				blts->at(i)->set_is_collision(true);
-				blood = (blood - blts->at(i)->get_bullet_damage() > 0) ? blood - blts->at(i)->get_bullet_damage() : 0;
-				//player hurt()
+				d_objects->at(i)->play_collision_music();
+				d_objects->at(i)->set_is_collision(true);
+				blood = (blood - d_objects->at(i)->get_damage() > 0) ? blood - d_objects->at(i)->get_damage() : 0;
 			}
 		}
 	}
 	void on_exit()//处理内存
 	{
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < damage_objects.size(); i++)
 		{
-			delete bullets[i];
+			delete damage_objects[i];
 		}
 		for (size_t i = 0; i < list_particle_effects.size(); i++)
 		{
@@ -388,24 +410,25 @@ public:
 	{
 		return { pos_player.x + img_size.x / 2,pos_player.y + img_size.y / 2 };
 	}
-	void updata_bullet_list()//遍历更新子弹列表
+
+	void updata_damage_objects_list()//遍历更新列表
 	{
 		int i = 0;
-		int j = bullets.size() - 1;
-		while (i<=j)
+		int j = damage_objects.size() - 1;
+		while (i <= j)
 		{
-			if (bullets[i]->get_is_collision()&&!bullets[i]->get_is_culculated())
+			if (damage_objects[i]->get_is_collision() && !damage_objects[i]->get_is_culculated())
 			{
-				energy = (energy + bullets[i]->get_energy() > 100) ? 100 : energy + bullets[i]->get_energy();
-				if (bullets[i]->bullet_type == Bullet::sunbullet)main_camera.shake(10, 100);
-				bullets[i]->set_is_culculated(true);
+				energy = (energy + damage_objects[i]->get_energy() > 100) ? 100 : energy + damage_objects[i]->get_energy();
+				if (damage_objects[i]->bullet_type == Bullet::sunbullet)main_camera.shake(10, 100);
+				damage_objects[i]->set_is_culculated(true);
 			}
-			if (bullets[i]->get_is_out_window() || bullets[i]->get_is_exploded_over())
+			if (damage_objects[i]->object_over())
 			{
-				auto temp = bullets[i];
-				bullets[i] = bullets[j];
+				auto temp = damage_objects[i];
+				damage_objects[i] = damage_objects[j];
 				delete temp;
-				bullets.pop_back();
+				damage_objects.pop_back();
 				j--;
 			}
 			else
@@ -494,6 +517,8 @@ protected:
 	Animation animation_player_die_right;
 	Animation animation_player_attack_left;
 	Animation animation_player_attack_right;
+	Animation animation_player_normal_attack_left;
+	Animation animation_player_normal_attack_right;
 	bool facing_right = true;//是否朝向右
 	//按键标志
 	bool left_key_down=false;
@@ -502,7 +527,7 @@ protected:
 	bool attack_key_down = false;
 	bool ex_key_down = false;
 	playerCharacter player_character;//玩家类型
-	std::vector<Bullet*> bullets;//玩家发出的子弹
+	std::vector<DamageObject*> damage_objects;//玩家的发出能造成伤害的物体列表
 	float radius_collision = 30;//与子弹碰撞检测半径
 
 	int blood=100;

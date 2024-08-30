@@ -19,14 +19,20 @@
     <Filter Include="头文件\player">
       <UniqueIdentifier>{25e870ad-8948-4be6-9e80-270d66f8e082}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\bullet">
-      <UniqueIdentifier>{3318f59a-4663-4f57-8908-84df9e86eb21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\particle">
       <UniqueIdentifier>{8379fa53-13d6-48ef-8846-a10f9d5c37ab}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\props">
       <UniqueIdentifier>{02467d77-a96a-4913-b126-ba178ae1177f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\damageobject">
+      <UniqueIdentifier>{53454c71-abfb-4b4b-aaee-30caa827c330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\damageobject\weapon">
+      <UniqueIdentifier>{c5cc0104-73cd-4a7b-b0f0-11985c242a84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\damageobject\bullet">
+      <UniqueIdentifier>{3318f59a-4663-4f57-8908-84df9e86eb21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,16 +90,16 @@
       <Filter>头文件\player</Filter>
     </ClInclude>
     <ClInclude Include="bullet.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="SunBullet.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="SunBulletEx.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="PeaBullet.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
       <Filter>头文件\particle</Filter>
@@ -117,16 +123,28 @@
       <Filter>头文件\props</Filter>
     </ClInclude>
     <ClInclude Include="SunBulletProp.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="UltraSkillProp.h">
       <Filter>头文件\props</Filter>
     </ClInclude>
     <ClInclude Include="PeaTrackingBullet.h">
-      <Filter>头文件\bullet</Filter>
+      <Filter>头文件\damageobject\bullet</Filter>
     </ClInclude>
     <ClInclude Include="Vector3D.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Ninja.h">
+      <Filter>头文件\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Ninja_Sword.h">
+      <Filter>头文件\damageobject\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageObject.h">
+      <Filter>头文件\damageobject</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>头文件\damageobject\weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
